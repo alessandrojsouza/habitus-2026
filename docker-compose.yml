@@ -5,6 +5,10 @@ services:
       - "8000:8000"
     volumes:
       # Cria um volume persistente para a pasta de dados
-      - ./data:/usr/src/python/app/devadmin/data
+      - sqlite_data:/usr/src/python/app/devadmin/data
     environment:
       - PYTHONUNBUFFERED=1
+      # [AJUSTE] Forçando a URL para o dj_database_url ler o caminho absoluto
+      - DATABASE_URL=sqlite:////usr/src/python/app/devadmin/data/db.sqlite3
+volumes:
+  sqlite_data:
