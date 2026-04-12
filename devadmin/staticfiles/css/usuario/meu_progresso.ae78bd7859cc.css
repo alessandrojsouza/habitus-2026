@@ -1,0 +1,644 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap');
+*{
+    margin:0 auto;
+    font-family: 'Lexend Deca', sans-serif;
+}
+body {
+    margin-top: 109px;
+    background-color: #070A22;
+}
+
+header{
+    background-color: #070A22;
+    padding: 2em;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 45px;
+}
+.logo-h {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+.logo-h img{
+    width: 50px;
+    cursor: pointer;
+}
+.seta-voltar img{
+    width: 25px;
+}
+.seta-voltar{
+    margin-left: 0 ;
+}
+.menu-icon img{
+    width:30px;
+    cursor: pointer;
+}
+.menu-icon {
+    position: absolute;
+    right: 20px;
+  }
+
+section.nome-pagina{
+    background-color: #C5F022;
+    text-align: center;
+    display: flex;
+    height: 61px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+h1 {
+    font-size: 20px;
+    margin:0;
+}
+.iniciar-treino{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+    text-decoration: none;
+    border-radius: 0px 0px 10px 10px;
+    background: #C5F022;
+    width: 340px;
+    flex-shrink: 0;
+    height: 39px;
+}
+.container{
+    margin-top: 2em;
+    max-width: 340px;
+    width: 100%;
+}
+.container h2{
+    color: white;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    text-align: left;
+    margin-bottom: 18px;
+    margin-top: 30px;
+}
+.container > div{
+    margin-top: 28px;
+    width: 340px;
+    flex-shrink: 0;
+    border-radius: 10px 10px 0px 0px;
+}
+.container h1{
+    color: white;
+    text-align: center;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    padding: 16px;
+}
+
+menu{
+    /*position: relative;*/
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #3B3E52;
+    padding: 1em;
+
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+menu img{
+    margin-bottom: 5px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+menu div a {
+    font-size: 25px;
+    color:white ;
+    text-decoration: none;
+    display: grid;
+    align-items: center;
+}
+h3 {
+    font-size: 10px;
+    color: #FFF;
+    font-weight: 700;
+    line-height: normal;
+    font-style: normal;
+}
+.menu-lateral {
+    position: fixed;
+    top: 0;
+    right: -500%;
+    width: 50%;
+    height: 100vh;
+    background-color: #3B3E52;
+    transition: right 0.3s ease;
+    z-index: 999;
+    padding: 2em;
+    color: white;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.fechar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 15px;
+    gap: 5em;
+
+}
+.menu-lateral ul>div{
+    display: block;
+    justify-content: start;
+    padding-bottom: 24px;
+    margin-bottom: 3em;
+}
+ul > div:nth-of-type(-n+3) {
+  border-bottom: 1px solid #D9D9D9;
+}
+
+.menu-lateral li a{
+    display: inline-flex;
+    align-items: center;
+    justify-content: start;
+    gap: 15px;
+    font-size: 15px;
+
+}
+main{
+    padding-bottom: 100px;
+}
+.menu-lateral img{
+    width: 26px;
+}
+.menu-lateral.ativo {
+    right: 0;
+}
+
+.menu-lateral .fechar-menu {
+    background: none;
+    border: none;
+    font-size: 2em;
+    color: white;
+    /*position: absolute;*/
+    right: 1em;
+    cursor: pointer;
+}
+
+.menu-lateral ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 4em;
+}
+
+.menu-lateral li {
+    margin-bottom: 24px;
+}
+
+.menu-lateral a {
+    text-decoration: none;
+    color: white;
+    font-size: 1.2em;
+}
+li.lida{
+    color: #FFF;
+}
+li{
+    list-style: none;
+    color: #FFF;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: normal;
+    font-style: normal;
+    margin-bottom: 10px;
+}
+
+
+.data-container {
+    display: flex;
+    gap: 1rem;
+}
+.notificacao{
+    margin-top: 30px;
+    width: 340px;
+
+}
+
+.nome-data{
+    margin: 0;
+    background-color: #7689A9;
+    height: 40px;
+    width: 340px;
+    border-radius: 10px 10px 0px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+strong{
+    color: white;
+    margin-right: 15px;
+    font-size: 10px;
+    font-weight: 400;
+    line-height: normal;
+    font-style: normal;
+}
+.conteudo{
+    background-color: #1E1C37;
+    height: 60px;
+    width: 340px;
+    border-radius: 0px 0px 10px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    margin-bottom: 10px;
+}
+.conteudo p {
+    margin-left: 15px;
+}
+.notificacao p{
+    color: white;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin-left: 15px;
+}
+
+/* Caixa visual */
+.custom-date {
+    width: 165px;
+    height: 45px;
+    background-color: #3e475b;
+    color: white;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+}
+#label-fim{
+    font-size: 12px;
+}
+#label-inicio{
+    font-size: 12px;
+}
+/* Ícone FontAwesome */
+.custom-date i {
+    color: #c1f538;
+}
+
+/* Ícone de calendário clicável */
+.custom-date img {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+}
+
+/* Input invisível, mas funcional */
+.custom-date input[type="date"] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    pointer-events: none; /* desativa clique direto */
+}
+
+.dias {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+}
+.dias .dia {
+    background-color: #ffffff; /* cor normal */
+    border-radius: 10px;
+    text-align: center;
+    color: white;
+    width: 46px;
+    height: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.dias .dia.treinou {
+    background-color: #C5F022; /* verde */
+    color: black;
+    font-weight: bold;
+}
+.dia h3{
+    color: #070A22;
+    font-size: 12px;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+.dia p{
+    color: #070A22;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.treino-card {
+    width: 340px;
+    height: 61px;
+    background-color: #1E1C37;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    display: flex;
+}
+.treino-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0;
+}
+.treinos_finalizados {
+    margin-top: 30px;
+}
+.treinos_finalizados p {
+    color: #ffffff;
+}
+.treino-info {
+    margin-left: 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+}
+.treinos_finalizados h3 {
+    margin-bottom: 10px;
+    font-size: 12px;
+}
+.treino-info h4{
+    font-size: 15px;
+    color: #ffffff;
+    margin: 0;
+}
+.treino-info p{
+    font-size: 12px;
+    color: #ffffff;
+    font-style: normal;
+    margin: 0;
+}
+span.badge {
+    background-color: #7689A9;
+    width: 130px;
+    height: 21px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    font-size: 10px;
+    font-weight: 700;
+    color: #070A22;
+    border-radius: 0px 10px 0px 10px;
+}
+a.btn {
+    color:#000000;
+    font-size: 9px;
+    font-style: normal;
+    width: 110px;
+    height: 19px;
+    text-decoration: none;
+    background-color: #C5F022;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+}
+
+section.progresso_atual {
+    margin-top: 30px;
+}
+.progresso_atual h2{
+    margin-bottom: 10px;
+}
+.progresso p{
+    color: #070A22;
+    background-color: #7689A9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 35px;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 20px;
+}
+
+
+
+.container {
+    max-width: 340px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.dados-pessoais,
+.dados-av-fisica,
+.medidas-circunferencia,
+.medidas-dobra-cutanea {
+    width: 340px !important;
+    margin-top: 25px;
+}
+
+.dados-pessoais > *,
+.dados-av-fisica > *,
+.medidas-circunferencia > *,
+.medidas-dobra-cutanea > * {
+    max-width: 340px;
+    box-sizing: border-box;
+}
+
+.dados-av-fisica > .trio,
+.medidas-circunferencia > .trio,
+.medidas-dobra-cutanea > .trio {
+    width: 340px;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.dados-av-fisica > .trio > div,
+.medidas-circunferencia > .trio > div,
+.medidas-dobra-cutanea > .trio > div {
+    flex: 1;
+    min-width: 0;
+    width: calc(33.333% - 7px); /* 3 colunas com gap */
+}
+
+.dados-av-fisica > div:not(.trio),
+.medidas-circunferencia > div:not(.trio),
+.medidas-dobra-cutanea > div:not(.trio) {
+    width: 340px;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.dados-av-fisica > div:not(.trio) > div,
+.medidas-circunferencia > div:not(.trio) > div,
+.medidas-dobra-cutanea > div:not(.trio) > div {
+    flex: 1;
+    min-width: 0;
+    width: calc(50% - 5px); /* 2 colunas com gap */
+}
+
+.medidas-circunferencia > div > .trio {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.medidas-circunferencia > div > .trio > div {
+    flex: 1;
+    min-width: 0;
+    width: calc(33.333% - 7px);
+}
+
+.dados-pessoais p,
+.dados-av-fisica p,
+.medidas-circunferencia p,
+.medidas-dobra-cutanea p {
+    text-align: left;
+    max-width: 340px;
+    box-sizing: border-box;
+}
+
+.dados-pessoais p:nth-child(even),
+.dados-av-fisica p:nth-child(even),
+.medidas-circunferencia p:nth-child(even),
+.medidas-dobra-cutanea p:nth-child(even) {
+    color: #7689A9;
+    font-size: 12px;
+    margin-bottom: 2px;
+    width: 100%;
+}
+
+.dados-pessoais p:nth-child(odd),
+.dados-av-fisica p:nth-child(odd),
+.medidas-circunferencia p:nth-child(odd),
+.medidas-dobra-cutanea p:nth-child(odd) {
+    color: #FFF;
+    font-size: 15px;
+    border-bottom: #FFF 1px solid;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.dados-pessoais > div > div p:nth-child(even),
+.dados-av-fisica > div > div p:nth-child(even),
+.medidas-circunferencia > div > div p:nth-child(even),
+.medidas-dobra-cutanea > div > div p:nth-child(even) {
+    width: 100%;
+    color: #FFF;
+    font-size: 15px;
+    border-bottom: #FFF 1px solid;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+}
+
+.dados-pessoais > div > div p:nth-child(odd),
+.dados-av-fisica > div > div p:nth-child(odd),
+.medidas-circunferencia > div > div p:nth-child(odd),
+.medidas-dobra-cutanea > div > div p:nth-child(odd) {
+
+    color: #7689A9;
+    font-size: 12px;
+    border-bottom: none;
+    margin-bottom: 1px;
+}
+
+.dados-pessoais h3,
+.dados-av-fisica h3,
+.medidas-circunferencia h3,
+.medidas-dobra-cutanea h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #C5F022;
+    margin-bottom: 15px;
+    text-align: left;
+    width: 340px;
+}
+
+.dados-pessoais > p:nth-child(odd),
+.dados-av-fisica > p:nth-child(odd),
+.medidas-circunferencia > p:nth-child(odd),
+.medidas-dobra-cutanea > p:nth-child(odd) {
+    width: 340px;
+}
+
+.dados-pessoais > p:nth-child(even),
+.dados-av-fisica > p:nth-child(even),
+.medidas-circunferencia > p:nth-child(even),
+.medidas-dobra-cutanea > p:nth-child(even) {
+    width: 340px;
+}
+
+
+.container > section > h3{
+    font-size: 18px;
+    font-weight: 600;
+    color:#C5F022;
+}
+
+form input, form select {
+    background: #3B3E52;
+    border-radius: 5px;
+    padding: 0 0 0 5px;
+    width: 100%;
+    height: 30px;
+    border: none;
+    color: white;
+    font-size: 10px;
+    margin: 2px 0 5px 0;
+}
+
+#data {
+    margin-top: 0;
+    height: 40px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.form-buttons a{
+    text-decoration: none;
+}
+
+.btn {
+    padding: 5px;
+    font-size: 13px;
+    background-color: #C5F022;
+    color: #000;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 600;
+    text-align: center;
+    border: none;
+    width: 165px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

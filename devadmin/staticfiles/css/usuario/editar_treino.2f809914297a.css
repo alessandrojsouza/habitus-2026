@@ -1,0 +1,675 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap');
+*{
+    margin:0 auto;
+    font-family: 'Lexend Deca', sans-serif;
+}
+body {
+    margin-top: 109px;
+    background-color: #070A22;
+}
+
+header {
+    background-color: #070A22;
+    padding: 2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 45px;
+}
+.logo-h {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+.menu-icon {
+    position: absolute;
+    right: 20px;
+  }
+header img{
+    cursor: pointer;
+}
+
+.logo-h img{
+    width: 50px;
+    cursor: pointer;
+}
+.seta-voltar img{
+    width: 25px;
+}
+.menu-icon img{
+    width:30px;
+    cursor: pointer;
+}
+
+section.nome-pagina {
+    background-color: #C5F022;
+    text-align: center;
+    display: flex;
+    height: 61px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+h3{
+    font-size: 10px;
+    color: #FFF;
+    font-weight: 700;
+    line-height: normal;
+    font-style: normal;
+}
+h1{
+    font-size: 20px;
+    margin:0;
+}
+main{
+    padding-bottom: 100px;
+}
+.treino-dia{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 340px;
+    border-radius: 10px;
+    background: #1E1C37;
+    flex-shrink: 0;
+    height: 103px;
+    margin-bottom: 13px;
+}
+.container{
+    margin-top: 2em;
+    max-width: 340px;
+}
+.treino-dia h2{
+    color: #FFF;
+    font-size: 13px;
+}
+.treino-dia p{
+    color: #FFF;
+    font-size: 11px;
+    margin-bottom: 13px;
+}
+.treino-dia div a{
+    color: white;
+    text-decoration: none;
+    color: #3B3E52;
+    font-size: 10px;
+    border-radius: 10px;
+    background: #FFF;
+    width: 84.751px;
+    flex-shrink: 0;
+    height: 20px;
+    padding: 4px 12px 4px 12px;
+}
+.treino-dia div img{
+    width: 84.751px;
+    flex-shrink: 0;
+    height: 85px;
+    display: block;
+}
+.treino-dia span a:nth-of-type(2) img {
+    width: 38.517px;
+    flex-shrink: 0;
+    height: 38.517px;
+}
+.treino-dia span a:nth-of-type(1) img {
+    width: 21px;
+    flex-shrink: 0;
+    height: 6px;
+    margin: 0;
+}
+.treino-dia span a {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.treino-dia h1{
+    font-size: 30px;
+    color: white;
+}
+menu{
+    /*position: relative;*/
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #3B3E52;
+    padding: 1em;
+
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+menu img{
+    margin-bottom: 5px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+menu div a {
+    color:white ;
+    text-decoration: none;
+    display: grid;
+    align-items: center;
+}
+.menu-lateral {
+    position: fixed;
+    top: 0;
+    right: -500%;
+    width: 50%;
+    height: 100vh;
+    background-color: #3B3E52;
+    transition: right 0.3s ease;
+    z-index: 999;
+    padding: 2em;
+    color: white;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.fechar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 15px;
+    gap: 5em;
+
+}
+.menu-lateral ul>div{
+    display: block;
+    justify-content: start;
+    padding-bottom: 24px;
+    margin-bottom: 3em;
+}
+ul > div:nth-of-type(-n+3) {
+  border-bottom: 1px solid #D9D9D9;
+}
+
+.menu-lateral li a{
+    display: inline-flex;
+    align-items: center;
+    justify-content: start;
+    gap: 15px;
+    font-size: 15px;
+
+}
+.menu-lateral img{
+    width: 26px;
+}
+.menu-lateral.ativo {
+    right: 0;
+}
+
+.menu-lateral .fechar-menu {
+    background: none;
+    border: none;
+    font-size: 2em;
+    color: white;
+    /*position: absolute;*/
+    right: 1em;
+    cursor: pointer;
+}
+
+.menu-lateral ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 4em;
+}
+
+.menu-lateral li {
+    margin-bottom: 24px;
+}
+
+.menu-lateral a {
+    text-decoration: none;
+    color: white;
+    font-size: 1.2em;
+}
+.novo_treino {
+    margin-top: 73px;
+    height: 40px;
+    flex-shrink: 0;
+    width: 340px;
+    border-radius: 50px;
+    background: #C5F022;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    color: #070A22;
+    font-size: 15px;
+    font-weight: bold;
+}
+.novo_treino img {
+    width: 26.833px;
+    flex-shrink: 0;
+    aspect-ratio: 26.83 / 26.83;
+    height: 26.833px;
+    margin: 0 0px 0px 8px;
+}
+
+.seta-voltar {
+    margin-left: 0;
+}
+
+.card-exercicio {
+    background-color: #181834;
+    border-radius: 0px 0px 10px 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.video-exercicio {
+    width: 85px;
+    height: 85px;
+    margin: 0;
+    border-radius: 10px;
+    flex-shrink: 0;
+    object-fit: cover;
+}
+
+.imagem-exercicio {
+    width: 85px;
+    height: 85px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin: 0;
+}
+.info-exercicio label{
+    color: white;
+
+}
+label{
+    margin: 0;
+    margin-bottom: 2px;
+    color: white;
+    font-size: 15px;
+}
+input{
+    font-size:12px;
+    border-radius: 5px;
+    height: 40px;
+    background-color: #3B3E52;
+    border:none ;
+    margin: 0px 0px 10px 0px;
+    padding: 0;
+}
+.nome input{
+    padding-left: 5px;
+}
+
+select:invalid {
+  color: #464F63; /* cor do texto quando nada foi selecionado */
+}
+.nome{
+    display: flex;
+    flex-direction: column;
+
+}
+
+.quant-nivel{
+    display: flex;
+}
+div#quant-exercicios{
+    margin-left: 0;
+    display: flex;
+    align-items: center;
+    width: 165px;
+    background-color: #7689A9;
+    border-radius: 5px;
+    height: 40px;
+    margin-bottom: 15px;
+}
+.quant-exercicios{
+    margin-right: 10px;
+    margin-left: 0;
+}
+div#quant-exercicios p{
+    font-size:10px;
+    color:white
+
+}
+.nivel{
+    display: flex;
+    flex-direction: column;
+}
+select{
+    font-size:12px;
+    height: 40px;
+    width: 340px;
+    background-color: #3B3E52;
+    border-radius: 5px;
+    border: none;
+    color: white;
+    
+}
+.datainicio-datafim{
+    display: flex;
+    margin-top: 10px;
+}
+.data-inicio{
+    margin-right: 10px;
+}
+input[type="date"]{
+    width: 155px;
+    height: 40px;
+    background-color: #3B3E52;
+    border-radius: 5px;
+    border: none;
+    color: white;
+    padding: 0 5px 0 5px;
+}
+input[type="text"]::placeholder {
+    color: #8E9EB8;
+}
+input[type="text"] {
+    color: white;
+    padding-left: 5px;
+}
+.busca-exercicios {
+    display: flex;
+    flex-direction: column;
+}
+.botoes{
+    display: flex;
+    justify-content: space-around;
+    width: 340px;
+    margin-top: 10px;
+}
+button{
+    background-color: #C5F022;
+    color: #070A22;
+    border: none;
+    font-weight: medium;
+    border-radius: 10px;
+    width: 165px;
+    height: 40px;
+    font-size: 15px;
+    cursor: pointer;
+}
+button.botao-excluir {
+    width: 312px;
+    border-radius: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.botoes a{
+    text-decoration: none;
+    color: white;
+    font-weight: medium;
+    background-color: #4E5A6E;
+    border-radius: 10px;
+    width: 165px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    cursor: pointer;
+    margin: 0px 10px 0px 0px;
+}
+.info-texto{
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    margin-bottom: 12px;
+}
+.texto {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: self-start;
+    margin: 0px 0px 0px 10px;
+}
+.texto label{
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: normal;
+    display: flex;
+    align-items: center;
+}
+label.grupo-muscular{
+    padding: 4px 20px 4px 20px;
+    border-radius: 10px;
+    font-weight: 400;
+    background: #7689A9;
+    font-size: 10px;
+}
+
+.inputs {
+    width: 100%;
+    display: grid;
+}
+input.checkbox-exercicio {
+    margin: 0;
+    margin-left: 10px;
+}
+.add-exercicio {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+.add-exercicio h2 {
+    font-size: 15px;
+    color: white;
+    font-weight: 700;
+    line-height: normal;
+}
+.add-exercicio input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+.btn-adicionar{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #C5F022;
+    width: 312px;
+    border-radius: 50px;
+    border: 1px solid #C5F022;
+    background: none;
+}
+.btn-adicionar img {
+    width: 15px;
+    margin: 0px 10px 0px 0px;
+}
+.inputs-detalhes input {
+    width: 97px;
+    margin-bottom: 10px;
+    color: white;
+}
+.inputs-detalhes {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+.inputs-detalhes h2 {
+    font-size: 12px;
+    color: white;
+    font-weight: 500;
+    margin-bottom:1px;
+}
+.inputs-observacoes input {
+    width: 312px;
+}
+.inputs-observacoes h2 {
+    font-size: 12px;
+    color: white;
+    font-weight: 500;
+    margin-bottom:1px;
+}
+
+video {
+    width: 340px;
+    height: 190px;
+    margin: 0;
+    border-radius: 10px;
+    flex-shrink: 0;
+    object-fit: cover;
+}
+.cancelar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 152px;
+    height: 40px;
+    border-radius: 10px;
+    border: none;
+    color: #ffffff;
+    background-color: #4E5A6E;
+    margin-right: 0;
+}
+.exercicio-form {
+    background-color: #181834;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+.exercicio-detalhes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.exercicio-inputs {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 10px;
+}
+.exercicio-inputs input{
+    color: white;
+    padding-left: 5px;
+    width: 92px;
+}
+.exercicio-detalhes h3{
+    font-size: 15px;
+
+}
+.nome_grupo{
+    margin-left: 10px;
+}
+.nome_grupo label {
+    padding: 4px 20px 4px 20px;
+    border-radius: 10px;
+    font-weight: 400;
+    background: #7689A9;
+    font-size: 10px;
+}
+.exercicio h1{
+    color: #ffffff;
+    font-size: 15px;
+}
+.delete-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    margin-top: 10px;
+
+}
+.delete-row input{
+    width: 40px;
+    margin-left: 10px;
+    margin-right: 0;
+    margin-bottom: 0;
+}
+.checkbox-exercicio{
+    width: 20px;
+}
+.exercicio-observacao textarea {
+    width: 304px;
+    max-width: 304px;
+    min-width: 304px;
+    background-color: #3B3E52;
+    color: #ffffff;
+    border-radius: 10px;
+    border: none;
+    height: 32px;
+}
+
+section.exercicio{
+    margin-top: 30px;
+}
+
+
+.ou-linha{
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: white;
+    margin: 20px 0;
+}
+
+.ou-linha::before,
+.ou-linha::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid white;
+    margin: 0 10px;
+    width: 200px;
+}
+div#resultados-exercicios {
+    margin-top: 10px;
+}
+
+.busca-exercicios select {
+    background-color: #4E5A6E;
+    width: 340px;
+    border-radius: 100px;
+    padding-left: 5px;
+    /* height: 45px; */
+}
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.7);
+}
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #3B3E52;
+    padding: 5px;
+    border-radius: 10px;
+}
+p.direitos_videos {
+    color: white;
+    text-align: center;
+}
+.direitos_videos a{
+    color: #ffffff;
+}
+.clonado{
+    background-color: #181834;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+.clonado-campos input {
+    width: 312px;
+}
+.exercicio-observacao input {
+    width: 100%;
+}
+.clonado-info strong {
+    color: white;
+}

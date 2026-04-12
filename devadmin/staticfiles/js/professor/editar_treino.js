@@ -109,7 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                     </div>
                                 </div>
                             </div>
-                            <button type="button" class="btn-adicionar" style="display:none;">Adicionar ao treino</button>
+                            <button type="button" class="btn-adicionar" style="display:none;">Adicionar exercício</button>
                         </div>
                     `;
 

@@ -1,0 +1,447 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap');
+*{
+    margin:0 auto;
+    font-family: 'Lexend Deca', sans-serif;
+}
+
+body {
+    margin-top: 109px;
+    background-color: #070A22;
+}
+
+header{
+    background-color: #070A22;
+    padding: 2em;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 45px;
+    margin: 0;
+    z-index: 999;
+}
+.seta-voltar {
+    margin-left: 0;
+}
+.logo-h {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+  
+.menu-icon {
+    position: absolute;
+    right: 20px;
+}
+header img{
+    cursor: pointer;
+}
+.logo-h img{
+    width: 50px;
+    cursor: pointer;
+}
+.seta-voltar img{
+    width: 25px;
+}
+.menu-icon img{
+    width:30px;
+    cursor: pointer;
+}
+
+section.nome-pagina{
+    background-color: #C5F022;
+    text-align: center;
+    display: flex;
+    height: 61px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+h1 {
+    font-size: 20px;
+    margin:0;
+}
+menu{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #3B3E52;
+    padding: 1em;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+menu img{
+    margin-bottom: 5px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+menu div a {
+    font-size: 25px;
+    color:white ;
+    text-decoration: none;
+    display: grid;
+    align-items: center;
+}
+h3 {
+    font-size: 10px;
+    color: #FFF;
+    font-weight: 700;
+    line-height: normal;
+    font-style: normal;
+}
+.menu-lateral {
+    position: fixed;
+    top: 0;
+    right: -500%;
+    width: 50%;
+    height: 100vh;
+    background-color: #3B3E52;
+    transition: right 0.3s ease;
+    z-index: 999;
+    padding: 2em;
+    color: white;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.fechar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 15px;
+    gap: 5em;
+
+}
+.menu-lateral ul>div{
+    display: block;
+    justify-content: start;
+    padding-bottom: 24px;
+    margin-bottom: 3em;
+}
+ul > div:nth-of-type(-n+3) {
+  border-bottom: 1px solid #D9D9D9;
+}
+
+.menu-lateral li a{
+    display: inline-flex;
+    align-items: center;
+    justify-content: start;
+    gap: 15px;
+    font-size: 15px;
+
+}
+main{
+    padding-bottom: 100px;
+}
+.menu-lateral img{
+    width: 26px;
+}
+.menu-lateral.ativo {
+    right: 0;
+}
+.menu-lateral .fechar-menu {
+    background: none;
+    border: none;
+    font-size: 2em;
+    color: white;
+    right: 1em;
+    cursor: pointer;
+}
+
+.menu-lateral ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 4em;
+}
+
+.menu-lateral li {
+    margin-bottom: 24px;
+}
+
+.menu-lateral a {
+    text-decoration: none;
+    color: white;
+    font-size: 1.2em;
+}
+.aluno {
+    display: flex;
+    border: 1px solid #7689A9;
+    border-radius: 10px;
+    max-width: 340px;
+    color: white;
+    align-items: center;
+    margin: 2em auto 0 auto;
+}
+.aluno img {
+    width: 100px;
+    height: 80px;
+    border-radius: 50%;
+    margin: 10px 15px;
+    object-fit:cover;
+}
+.info-aluno {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    align-items: flex-start;
+    width: 100%;
+}
+.nome-aluno {
+    margin: 0;
+    padding-bottom: 1px;
+    font-size: 21px;
+}
+.matricula {
+    margin: 0;
+    font-weight: 150;
+    font-size: 15px;
+}
+.mudar-aluno {
+    margin: 10px 0 0 0;
+    align-self: flex-start;
+}
+
+.mudar-aluno button {
+    width: 110px;
+    height: 25px;
+    background-color: #C5F022;
+    border-style: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+.novo_treino button {
+    width: 340px;
+    height: 40px;
+    background-color: #C5F022;
+    border-style: none;
+    border-radius: 25px;
+    margin: 20px 0px 15px 0px;
+    font-weight: 500;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.novo_treino {
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+}
+
+.progresso_atual {
+    width: 100%;
+    max-width: 340px;
+    margin: 0 auto;
+}
+
+.progresso_atual h2{
+    color: white;
+    font-size: 15px;
+    text-align: start;
+    margin-bottom: 15px;
+}
+
+.progresso p{
+    color: #070A22;
+    background-color: #7689A9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 30px;
+}
+
+.treinos {
+    margin: 20px auto 0 auto;
+    max-width: 340px;
+    width: 100%;
+}
+
+.treinos h2{
+    color: white;
+    font-size: 16px;
+    text-align: start;
+    margin-bottom: 15px;
+}
+
+.treino-card {
+    position: relative; /* pai relativo para dropdown */
+    display: flex;
+    align-items: center;
+    background: #1E1C37;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 13px;
+    width: 320px;
+    height: 103px;
+    overflow: visible;
+}
+
+.video-exercicio {
+    width: 85px;
+    height: 85px;
+    flex-shrink: 0;
+    margin: 0;
+}
+
+.video-exercicio video,
+.video-exercicio img {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.info-treino {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 12px;
+    gap: 4px;
+}
+
+.info-treino h2 {
+    font-size: 13px;
+    color: #FFF;
+    margin: 0;
+}
+
+.info-treino p {
+    font-size: 11px;
+    color: #FFF;
+    margin: 0;
+}
+
+a.detalhes {
+    font-size: 10px;
+    background: #FFF;
+    color: #3B3E52;
+    border-radius: 10px;
+    padding: 4px 12px;
+    text-decoration: none;
+    width: fit-content;
+    margin: 10px 0px 0px 0px;
+}
+
+.menu-opcoes {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.btn-opcoes {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.btn-opcoes img {
+    width: 25px;
+    height: auto;
+    cursor: pointer;
+    filter: brightness(0) saturate(100%) invert(73%) sepia(89%) saturate(376%) hue-rotate(29deg) brightness(101%) contrast(95%);
+}
+
+.dropdown-opcoes {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #3B3E52;
+    border-radius: 8px;
+    padding: 6px 0;
+    display: flex;
+    flex-direction: column;
+    min-width: 100px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    z-index: 9999;
+    justify-items: center;
+}
+
+.dropdown-opcoes.hidden {
+    display: none;
+}
+
+.dropdown-opcoes a,
+.dropdown-opcoes button {
+    background: none;
+    border: none;
+    color: #C5F022;
+    font-size: 13px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.dropdown-opcoes a img,
+.dropdown-opcoes button img {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+}
+
+.dropdown-opcoes a:hover,
+.dropdown-opcoes button:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+}
+
+.separador {
+    width: 60%;
+    height: 1px;
+    background-color: #7689A9;
+    margin: 4px auto;
+    border-radius: 5px;
+}
+
+.barra-progresso {
+    width: 100%;
+    background-color: #ccc;
+    border-radius: 20px;
+    height: 40px;
+    overflow: hidden;
+    position: relative;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    line-height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 13px;
+    color: black;
+    font-weight: 500;
+}
+
+.barra-progresso p {
+    z-index: 5;
+}
+    
+.progresso-interno {
+    height: 100%;
+    background-color: #C5F022;
+    border-radius: 10px 0 0 10px;
+    transition: width 0.5s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+}

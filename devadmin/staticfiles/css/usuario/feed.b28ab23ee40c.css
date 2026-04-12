@@ -1,0 +1,561 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap');
+*{
+    margin:0 auto;
+    font-family: 'Lexend Deca', sans-serif;
+}
+body {
+    margin-top: 109px;
+    background-color: #070A22;
+}
+
+header{
+    background-color: #070A22;
+    padding: 2em;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 45px;
+}
+.logo-h {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+.logo-h img{
+    width: 50px;
+    cursor: pointer;
+}
+.seta-voltar img{
+    width: 25px;
+}
+.seta-voltar{
+    margin-left: 0 ;
+}
+.menu-icon img{
+    width:30px;
+    cursor: pointer;
+}
+.menu-icon {
+    position: absolute;
+    right: 20px;
+  }
+
+section.nome-pagina{
+    background-color: #C5F022;
+    text-align: center;
+    display: flex;
+    height: 61px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+h1 {
+    font-size: 20px;
+    margin:0;
+}
+.iniciar-treino{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+    text-decoration: none;
+    border-radius: 0px 0px 10px 10px;
+    background: #C5F022;
+    width: 340px;
+    flex-shrink: 0;
+    height: 39px;
+    margin-top: 23px;
+}
+.iniciar-treino h2{
+    font-size: 16px;
+    margin: 0 8px;
+}
+.iniciar-treino p{
+    font-size: 16px;
+    margin: 0 8px;
+}
+.iniciar-treino img{
+    width: 12.839px;
+    flex-shrink: 0;
+    height: 15.173px;
+    margin:0;
+}
+.container{
+    margin-top: 2em;
+    max-width: 340px;
+    width: 100%;
+}
+.container h2{
+    color: white;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    text-align: center;
+    margin-bottom: 10px;
+}
+.detalhes-treino{
+    margin: 0px auto 0px 0px;
+}
+.treino{
+    margin-top: 28px;
+    margin-bottom: 72px;
+    width: 340px;
+    height: 203px;
+    flex-shrink: 0;
+    border-radius: 10px 10px 0px 0px;
+    background: #1E1C37;
+}
+.container h1{
+    color: white;
+    text-align: center;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    padding: 16px;
+}
+.treino-dia{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    background-color: #404676;
+    width: 317px;
+    flex-shrink: 0;
+    height: 128px;
+}
+
+.treino-dia img{
+    width: 96px;
+    flex-shrink: 0;
+    height: 96px;
+    margin: 15px;
+}
+.treino-dia a{
+    background-color: #1E1C37;
+    width: 102.6px;
+    flex-shrink: 0;
+    height: 21px;
+    color:white;
+    text-decoration: none;
+    padding: 3px 25px 3px 25px;
+    border-radius: 20px;
+    font-size: 12px;
+
+}
+.treino-dia div >div{
+    padding: 1em;
+}
+menu{
+    /*position: relative;*/
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #3B3E52;
+    padding: 1em;
+
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+menu img{
+    margin-bottom: 5px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+menu div a {
+    font-size: 25px;
+    color:white ;
+    text-decoration: none;
+    display: grid;
+    align-items: center;
+}
+h3 {
+    font-size: 10px;
+    color: #FFF;
+    font-weight: 700;
+    line-height: normal;
+    font-style: normal;
+}
+.menu-lateral {
+    position: fixed;
+    top: 0;
+    right: -500%;
+    width: 50%;
+    height: 100vh;
+    background-color: #3B3E52;
+    transition: right 0.3s ease;
+    z-index: 999;
+    padding: 2em;
+    color: white;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.fechar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 15px;
+    gap: 5em;
+
+}
+.menu-lateral ul>div{
+    display: block;
+    justify-content: start;
+    padding-bottom: 24px;
+    margin-bottom: 3em;
+}
+ul > div:nth-of-type(-n+3) {
+  border-bottom: 1px solid #D9D9D9;
+}
+
+.menu-lateral li a{
+    display: inline-flex;
+    align-items: center;
+    justify-content: start;
+    gap: 15px;
+    font-size: 15px;
+
+}
+main{
+    padding-bottom: 100px;
+}
+.menu-lateral img{
+    width: 26px;
+}
+.menu-lateral.ativo {
+    right: 0;
+}
+
+.menu-lateral .fechar-menu {
+    background: none;
+    border: none;
+    font-size: 2em;
+    color: white;
+    /*position: absolute;*/
+    right: 1em;
+    cursor: pointer;
+}
+
+.menu-lateral ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 4em;
+}
+
+.menu-lateral li {
+    margin-bottom: 24px;
+}
+
+.menu-lateral a {
+    text-decoration: none;
+    color: white;
+    font-size: 1.2em;
+}
+h1#noticias {
+    padding: 0;
+}
+.noticia{
+    background-color: #1E1C37;
+    color:#FFF;
+    margin-top: 20px;
+    border-radius: 7px;
+    padding: 0.8em;
+    
+}
+.cabecalho-noticia{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+p.data-publicacao {
+    font-size: 12px;
+    text-align: right;
+}
+.noticia img{
+    margin:0;
+    padding:1em;
+}
+.info-autor {
+    margin: 0;
+}
+.cabecalho-noticia img{
+    width: 50px; 
+    height: 50px; 
+    border-radius: 50%; 
+    object-fit: cover;
+}
+.info-autor strong{
+    font-size: 16px;
+}
+.info-autor p{
+    font-size: 12px;
+}
+.descricao {
+    font-size: 15px;
+}
+.imagem-noticia {
+    border-radius: 10px;
+    border: 1px solid #4E5A6E;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.novo_treino {
+    height: 40px;
+    flex-shrink: 0;
+    width: 300px;
+    border-radius: 50px;
+    background: #C5F022;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    color: #000000;
+}
+.aviso{
+    color: white;
+    text-align: center;
+}
+.novo_treino img {
+    width: 26.833px;
+    flex-shrink: 0;
+    aspect-ratio: 26.83 / 26.83;
+    height: 26.833px;
+    margin: 0 0px 0px 8px;
+}
+.novo_treino h2 {
+    color:black;
+    font-weight: 500;
+    font-size: 15px;
+    margin: 0px 0px 0px 8px;
+}
+.add_treino {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 15px;
+}
+.treino-dia h2 {
+    text-align: left;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.7);
+}
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #3B3E52;
+    padding: 5px;
+    border-radius: 10px;
+}
+p.direitos_videos {
+    color: white;
+    text-align: center;
+}
+.direitos_videos a{
+    color: #ffffff;
+}
+#videoContainer video {
+    width: 340px;
+    height: 190px;
+}
+
+/* Fundo do modal */
+.modal {
+  display: none; /* escondido por padrão */
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  background-color: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+/* Caixa do modal */
+.modal-content {
+  background: #3B3E52; /* roxo escuro */
+  color: #fff;
+  border-radius: 15px;
+  width: 340px;
+  padding: 12px 5px 0px 5px;
+  max-height: 90vh;
+  overflow-y: auto;
+  font-family: Arial, sans-serif;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  max-height: 430px;
+}
+
+/* Botão fechar */
+.close {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Título professor */
+.montado-por {
+  font-size: 14px;
+  margin-bottom: 10px;
+  font-weight: 500;
+  color: #d1d5db;
+}
+
+.linha {
+  display: flex;
+  justify-content: space-between;
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+/* Título da lista */
+.titulo-exercicios {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 15px 0 10px 0;
+  text-align: center;
+  border-top: 1px solid #444;
+  padding-top: 10px;
+}
+
+/* Lista de exercícios */
+.lista-exercicios {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Card de exercício */
+.lista-exercicios div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #3C3E70;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+/* Imagem */
+.lista-exercicios img {
+  width: 65px;
+  height: 65px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+/* Nome e dados */
+.lista-exercicios h5 {
+  font-size: 15px;
+  margin: 0;
+  font-weight: 600;
+}
+div#lista_exercicios > div {
+    margin-bottom: 10px;
+}
+.lista-exercicios p {
+  font-size: 13px;
+  margin: 2px 0 0 0;
+  color: #d1d5db;
+}
+div#lista_exercicios img {
+    width: 133px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 10px 0 0 10px;
+    margin: 0;
+}
+
+div#lista_exercicios div {
+    display: flex;
+    background: #1E1C37;
+    border-radius: 10px;
+}
+.sobre_exercicio {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    
+}
+h3.text-sm {
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+    color: #7689A9;
+    font-weight: 500;
+    border-bottom: 1px solid #4E5A6E;
+    margin-bottom: 15px;
+}
+span#montador {
+    margin: 0;
+    font-size: 15px;
+    color: #FFFFFF;
+    font-weight: 400;
+}
+.flex.justify-between.mt-2 {
+    display: flow-root;
+}
+.flex.justify-between.mt-2 > p {
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid #4E5A6E;
+    font-weight: 500;
+    color: #7689A9;
+    margin: 0px 10px 15px 0px;
+    font-size: 12px;
+}
+.flex.justify-between.mt-2 span {
+    font-weight: 400;
+    color: #FFFFFF;
+    margin-left: 0;
+    font-size: 15px;
+}
+h4.text-lg.mt-4 {
+    text-align: center;
+    margin-bottom:15px;
+}
+.sobre_exercicio h5 {
+    font-size: 12px;
+    font-weight: 700;
+    width: 200px;
+    margin-bottom: 5px;
+}
+.sobre_exercicio p {
+    margin: 0;
+    font-weight: 400;
+    font-size:10px;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 2px;
+}
+.ou-linha{
+    display: flex;
+    align-items: center;
+    text-align: center;
+    border-bottom: 1px solid #797979;
+    margin: 32px 0px 32px 0px;
+}
+

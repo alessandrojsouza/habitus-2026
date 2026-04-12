@@ -1,0 +1,363 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap');
+*{
+    margin:0 auto;
+    font-family: 'Lexend Deca', sans-serif;
+}
+body {
+    margin-top: 109px;
+    background-color: #070A22;
+}
+
+header{
+    background-color: #070A22;
+    padding: 2em;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 45px;
+}
+.logo-h {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+.logo-h img{
+    width: 50px;
+    cursor: pointer;
+}
+.seta-voltar img{
+    width: 25px;
+}
+.seta-voltar{
+    margin-left: 0 ;
+}
+.menu-icon img{
+    width:30px;
+    cursor: pointer;
+}
+.menu-icon {
+    position: absolute;
+    right: 20px;
+  }
+
+section.nome-pagina{
+    background-color: #C5F022;
+    text-align: center;
+    display: flex;
+    height: 61px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+h1 {
+    font-size: 20px;
+    margin:0;
+}
+.iniciar-treino{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+    text-decoration: none;
+    border-radius: 0px 0px 10px 10px;
+    background: #C5F022;
+    width: 340px;
+    flex-shrink: 0;
+    height: 39px;
+}
+.iniciar-treino h2{
+    font-size: 16px;
+    margin: 0 8px;
+}
+.iniciar-treino p{
+    font-size: 16px;
+    margin: 0 8px;
+}
+.iniciar-treino img{
+    width: 12.839px;
+    flex-shrink: 0;
+    height: 15.173px;
+    margin:0;
+}
+.container{
+    margin-top: 2em;
+    max-width: 340px;
+    width: 100%;
+}
+.container h2{
+    color: white;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    text-align: center;
+    margin-bottom: 13px;
+}
+/*.container > div{
+    margin-top: 28px;
+    width: 340px;
+    height: 203px;
+    flex-shrink: 0;
+    border-radius: 10px 10px 0px 0px;
+    background: #1E1C37;
+} SABER O QUE É*/
+.container h1{
+    color: white;
+    text-align: center;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    padding: 16px;
+}
+.treino-dia{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    background-color: #404676;
+    width: 317px;
+    flex-shrink: 0;
+    height: 128px;
+}
+
+.treino-dia img{
+    width: 91px;
+    flex-shrink: 0;
+    height: 91px;
+}
+.treino-dia a{
+    background-color: #1E1C37;
+    width: 102.6px;
+    flex-shrink: 0;
+    height: 21px;
+    color:white;
+    text-decoration: none;
+    padding: 3px 25px 3px 25px;
+    border-radius: 20px;
+    font-size: 12px;
+
+}
+.treino-dia div >div{
+    padding: 1em;
+}
+menu{
+    /*position: relative;*/
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #3B3E52;
+    padding: 1em;
+
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+menu img{
+    margin-bottom: 5px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+menu div a {
+    font-size: 25px;
+    color:white ;
+    text-decoration: none;
+    display: grid;
+    align-items: center;
+}
+h3 {
+    font-size: 10px;
+    color: #FFF;
+    font-weight: 700;
+    line-height: normal;
+    font-style: normal;
+}
+.menu-lateral {
+    position: fixed;
+    top: 0;
+    right: -500%;
+    width: 50%;
+    height: 100vh;
+    background-color: #3B3E52;
+    transition: right 0.3s ease;
+    z-index: 999;
+    padding: 2em;
+    color: white;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.fechar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 15px;
+    gap: 5em;
+
+}
+.menu-lateral ul>div{
+    display: block;
+    justify-content: start;
+    padding-bottom: 24px;
+    margin-bottom: 3em;
+}
+ul > div:nth-of-type(-n+3) {
+  border-bottom: 1px solid #D9D9D9;
+}
+
+.menu-lateral li a{
+    display: inline-flex;
+    align-items: center;
+    justify-content: start;
+    gap: 15px;
+    font-size: 15px;
+
+}
+main{
+    padding-bottom: 100px;
+}
+.menu-lateral img{
+    width: 26px;
+}
+.menu-lateral.ativo {
+    right: 0;
+}
+
+.menu-lateral .fechar-menu {
+    background: none;
+    border: none;
+    font-size: 2em;
+    color: white;
+    /*position: absolute;*/
+    right: 1em;
+    cursor: pointer;
+}
+
+.menu-lateral ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 4em;
+}
+
+.menu-lateral li {
+    margin-bottom: 24px;
+}
+
+.menu-lateral a {
+    text-decoration: none;
+    color: white;
+    font-size: 1.2em;
+}
+section.noticias{
+    margin-top: 87px;
+}
+.noticia{
+    background-color: #1E1C37;
+    color:#FFF;
+    margin-top: 20px;
+    border-radius: 7px;
+    padding: 0.8em;
+    
+}
+.cabecalho-noticia{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+p.data-publicacao {
+    font-size: 10px;
+    text-align: right;
+}
+.noticia img{
+    margin:0;
+    padding:1em;
+}
+.info-autor {
+    margin: 0;
+}
+.cabecalho-noticia img{
+    width: 50px; 
+    height: 50px; 
+    border-radius: 50%; 
+    object-fit: cover;
+}
+
+
+
+
+
+.container form{
+    width: 340px;
+}
+
+.linha{
+    display: flex;
+    gap: 10px;
+}
+
+.linha > div{
+    text-align: left;
+    width: 162.5px;
+}
+
+.linha > div > input{
+    width: 162.5px;
+    height: 30px;
+    margin: 0 0 10px 0;
+    padding-inline: 0;
+    padding-block: 0;
+    border: none;
+    padding-left: 5px;
+}
+
+.info label{
+    text-align: left;
+    display: block;
+    color: #FFF;
+}
+
+.info input{
+    border: none;
+    width: 340px;
+    padding-block: 0;
+    padding-inline: 0;
+    height: 40px;
+    margin-bottom: 10px;
+    color: #FFF;
+    background-color: #3B3E52;
+    border-radius: 5px;
+    padding-left: 5px;
+}
+
+.container button{
+    width: 160px;
+    height: 40px;
+    border-radius: 10px;
+    border-style: none;
+    padding-block: 0;
+    padding-inline: 0;
+    margin-top: 30px;
+    font-weight: 500;
+}
+
+.cancel{
+    background-color: #4E5A6E;
+    color: #fff;
+}
+
+.save{
+    background-color: #C5F022;
+}
+
+.botoes{
+    display: flex;
+    gap: 10px;
+}

@@ -1,0 +1,445 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap');
+*{
+    margin:0 auto;
+    font-family: 'Lexend Deca', sans-serif;
+}
+body {
+    margin-top: 109px;
+    background-color: #070A22;
+}
+
+header{
+    background-color: #070A22;
+    padding: 2em;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 45px;
+    z-index: 999;
+}
+.logo-h {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+.logo-h img{
+    width: 50px;
+    cursor: pointer;
+}
+.seta-voltar img{
+    width: 25px;
+}
+.seta-voltar{
+    margin-left: 0 ;
+}
+.menu-icon img{
+    width:30px;
+    cursor: pointer;
+}
+.menu-icon {
+    position: absolute;
+    right: 20px;
+  }
+
+section.nome-pagina{
+    background-color: #C5F022;
+    text-align: center;
+    display: flex;
+    height: 61px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+h1 {
+    font-size: 20px;
+    margin:0;
+}
+.iniciar-treino{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+    text-decoration: none;
+    border-radius: 0px 0px 10px 10px;
+    background: #C5F022;
+    width: 340px;
+    flex-shrink: 0;
+    height: 39px;
+}
+.container{
+    margin-top: 2em;
+    max-width: 340px;
+    width: 100%;
+}
+.container h2{
+    color: white;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin-bottom: 13px;
+}
+
+.container h1{
+    color: white;
+    text-align: center;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    padding: 16px;
+}
+
+menu{
+    /*position: relative;*/
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #3B3E52;
+    padding: 1em;
+
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+menu img{
+    margin-bottom: 5px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+menu div a {
+    font-size: 25px;
+    color:white ;
+    text-decoration: none;
+    display: grid;
+    align-items: center;
+}
+h3 {
+    font-size: 10px;
+    color: #FFF;
+    font-weight: 700;
+    line-height: normal;
+    font-style: normal;
+}
+.menu-lateral {
+    position: fixed;
+    top: 0;
+    right: -500%;
+    width: 50%;
+    height: 100vh;
+    background-color: #3B3E52;
+    transition: right 0.3s ease;
+    z-index: 999;
+    padding: 2em;
+    color: white;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.fechar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 15px;
+    gap: 5em;
+
+}
+.menu-lateral ul>div{
+    display: block;
+    justify-content: start;
+    padding-bottom: 24px;
+    margin-bottom: 3em;
+}
+ul > div:nth-of-type(-n+3) {
+  border-bottom: 1px solid #D9D9D9;
+}
+
+.menu-lateral li a{
+    display: inline-flex;
+    align-items: center;
+    justify-content: start;
+    gap: 15px;
+    font-size: 15px;
+
+}
+main{
+    padding-bottom: 100px;
+}
+.menu-lateral img{
+    width: 26px;
+}
+.menu-lateral.ativo {
+    right: 0;
+}
+
+.menu-lateral .fechar-menu {
+    background: none;
+    border: none;
+    font-size: 2em;
+    color: white;
+    /*position: absolute;*/
+    right: 1em;
+    cursor: pointer;
+}
+
+.menu-lateral ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 4em;
+}
+
+.menu-lateral li {
+    margin-bottom: 24px;
+}
+
+.menu-lateral a {
+    text-decoration: none;
+    color: white;
+    font-size: 1.2em;
+}
+li.lida{
+    color: #FFF;
+}
+li{
+    list-style: none;
+    color: #FFF;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: normal;
+    font-style: normal;
+    margin-bottom: 10px;
+}
+
+
+.data-container {
+    display: flex;
+    gap: 1rem;
+}
+.notificacao{
+    margin-top: 30px;
+    width: 340px;
+
+}
+
+.nome-data{
+    margin: 0;
+    background-color: #7689A9;
+    height: 40px;
+    width: 340px;
+    border-radius: 10px 10px 0px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+strong{
+    color: white;
+    margin-right: 15px;
+    font-size: 10px;
+    font-weight: 400;
+    line-height: normal;
+    font-style: normal;
+}
+.conteudo{
+    background-color: #1E1C37;
+    height: 60px;
+    width: 340px;
+    border-radius: 0px 0px 10px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    margin-bottom: 10px;
+}
+.conteudo p {
+    margin-left: 15px;
+}
+.notificacao p{
+    color: white;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin-left: 15px;
+}
+
+/* Caixa visual */
+.custom-date {
+    width: 165px;
+    height: 45px;
+    background-color: #3e475b;
+    color: white;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+}
+#label-fim{
+    font-size: 12px;
+}
+#label-inicio{
+    font-size: 12px;
+}
+/* Ícone FontAwesome */
+.custom-date i {
+    color: #c1f538;
+}
+
+/* Ícone de calendário clicável */
+.custom-date img {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+}
+
+/* Input invisível, mas funcional */
+.custom-date input[type="date"] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    pointer-events: none; /* desativa clique direto */
+}
+
+
+
+
+
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 10px;
+}
+
+.card-treino {
+    background-color: #1E1E2E;
+    height: 100px;
+    width: 340px;
+    border-radius: 12px;
+    color: #fff;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+    position: relative;
+}
+
+.card-treino h2 {
+    font-size: 12px;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.info-treino p {
+    font-size: 10px;
+    color: white;
+}
+
+.datas {
+    display: flex;
+    justify-content: end;
+    font-size: 10px;
+    margin: 10px 15px 0px 0px;
+    position: absolute;
+    top: 45px;
+    right: 0;
+}
+.datas div {
+    margin: 0;
+}
+.status-arquivado {
+    background-color: #7689A9; /* verde claro */
+    color: white;
+    padding: 4px 12px;
+    border-radius:0px 10px 0px 10px;
+    font-size: 10px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
+.info-treino{
+    margin: 15px auto 15px 15px;
+}
+.acoes {
+    margin: 10px auto 10px 10px;
+}
+
+.btn-detalhar {
+    background-color: #C5F022;
+    color: #000;
+    border-radius: 20px;
+    padding: 5px;
+    font-size: 10px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.nenhum-treino {
+    text-align: center;
+    color: white;
+    margin-top: 30px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+.filtros {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.filtro {
+    background-color: #4E5A6E;
+    display: flex;
+    align-items: center;
+    border-radius: 50px;
+    width: 340px;
+    height: 40px;
+}
+
+.filtro input,
+.filtro select {
+    flex: 1;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 12px;
+    outline: none;
+    padding: 0px 5px 0px 5px;
+}
+
+.filtro img {
+    width: 22px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.filtro.datas {
+    display: flex;
+    justify-content: space-between;
+}
+
+.filtro.datas input {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.filtro.datas input:last-child {
+    margin-right: 0;
+}

@@ -1,0 +1,322 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap');
+*{
+    margin:0 auto;
+    font-family: 'Lexend Deca', sans-serif;
+}
+body {
+    margin-top: 109px;
+    background-color: #070A22;
+}
+
+header{
+    background-color: #070A22;
+    padding: 2em;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 45px;
+    z-index: 999;
+}
+.seta-voltar {
+    margin-left: 0;
+}
+.logo-h {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+  
+.menu-icon {
+    position: absolute;
+    right: 20px;
+}
+header img{
+    cursor: pointer;
+}
+.logo-h img{
+    width: 50px;
+    cursor: pointer;
+}
+.seta-voltar img{
+    width: 25px;
+}
+.menu-icon img{
+    width:30px;
+    cursor: pointer;
+}
+
+section.nome-pagina{
+    background-color: #C5F022;
+    text-align: center;
+    display: flex;
+    height: 61px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+h1 {
+    font-size: 20px;
+    margin:0;
+}
+menu{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #3B3E52;
+    padding: 1em;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+menu img{
+    margin-bottom: 5px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+menu div a {
+    font-size: 25px;
+    color:white ;
+    text-decoration: none;
+    display: grid;
+    align-items: center;
+}
+h3 {
+    font-size: 10px;
+    color: #FFF;
+    font-weight: 700;
+    line-height: normal;
+    font-style: normal;
+}
+.menu-lateral {
+    position: fixed;
+    top: 0;
+    right: -500%;
+    width: 50%;
+    height: 100vh;
+    background-color: #3B3E52;
+    transition: right 0.3s ease;
+    z-index: 999;
+    padding: 2em;
+    color: white;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.fechar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 15px;
+    gap: 5em;
+
+}
+.menu-lateral ul>div{
+    display: block;
+    justify-content: start;
+    padding-bottom: 24px;
+    margin-bottom: 3em;
+}
+ul > div:nth-of-type(-n+3) {
+  border-bottom: 1px solid #D9D9D9;
+}
+
+.menu-lateral li a{
+    display: inline-flex;
+    align-items: center;
+    justify-content: start;
+    gap: 15px;
+    font-size: 15px;
+
+}
+main{
+    padding-bottom: 100px;
+}
+.menu-lateral img{
+    width: 26px;
+}
+.menu-lateral.ativo {
+    right: 0;
+}
+
+.container {
+    margin-top: 2em;
+    max-width: 340px;
+    width: 100%;
+}
+
+.container input {
+    background-color: #4E5A6E;
+    color: #FFF;
+    border-style: none;
+    border-radius: 100px;
+    width: 328px;
+    height: 38px;
+    padding-left: 10px;
+}
+
+input::placeholder {
+    color: #FFF;
+    font-weight: 300;
+}
+.search-wrapper img{
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+.search-wrapper {
+    position: relative;
+}
+.container button {
+    width: 340px;
+    height: 40px;
+    background-color: #C5F022;
+    border-style: none;
+    border-radius: 25px;
+    margin: 10px 0px 10px 0px;
+    font-weight: 500;
+    font-size: 15px;
+}
+
+.aluno {
+    width: 340px;
+    height: 125px;
+    display: flex;
+    align-items: center;
+    background-color: #1E1C37;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.aluno img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 1em 0 0.5em;
+}
+
+.info-aluno {
+    color: #fff;
+    height: 80px;
+    width: 160px;
+}
+
+.nome-aluno {
+    font-size: 18px;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+.num-treinos {
+    font-weight: 300;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.ver-perfil {
+    margin: 0;
+    padding: 0;
+}
+
+.ver-perfil button {
+    width: 110px;
+    height: 22px;
+    background-color: #C5F022;
+    border-style: none;
+    border-radius: 25px;
+    font-weight: 500;
+    font-size: 12px;
+    cursor: pointer;
+    margin: 1em 0 1em 0;
+    padding: 0;
+}
+
+.acoes-aluno {
+    display: flex;
+    align-items: center;
+}
+
+.reportar {
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 0 0 8px;
+}
+
+.reportar img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    margin: 0;
+    border-radius: 0px;
+    filter: brightness(1) saturate(100%) invert(52%) sepia(90%) saturate(800%) hue-rotate(-10deg) contrast(100%);
+}
+
+.editar-aluno {
+    display: flex;
+    align-items: center;
+    margin-right: 1em;
+    margin-bottom: 0.5em;
+}
+
+.editar-aluno button {
+    width: 40px;
+    height: 40px;
+    background-color: #C5F022;
+    border-style: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+}
+
+.editar-aluno img {
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+    margin: 0;
+    border-radius: 0px;
+}
+
+.menu-lateral .fechar-menu {
+    background: none;
+    border: none;
+    font-size: 2em;
+    color: white;
+    /*position: absolute;*/
+    right: 1em;
+    cursor: pointer;
+}
+
+.menu-lateral ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 4em;
+}
+
+.menu-lateral li {
+    margin-bottom: 24px;
+}
+
+.menu-lateral a {
+    text-decoration: none;
+    color: white;
+    font-size: 1.2em;
+}

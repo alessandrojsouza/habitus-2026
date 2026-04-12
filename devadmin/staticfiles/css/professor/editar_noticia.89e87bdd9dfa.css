@@ -1,0 +1,394 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap');
+*{
+    margin:0 auto;
+    font-family: 'Lexend Deca', sans-serif;
+}
+body {
+    margin-top: 110px;
+    background-color: #070A22;
+}
+
+header{
+    background-color: #070A22;
+    padding: 2em;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 45px;
+}
+.logo-h {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+.menu-icon {
+    position: absolute;
+    right: 20px;
+  }
+header img{
+    cursor: pointer;
+}
+.logo-h img{
+    width: 50px;
+    cursor: pointer;
+}
+.seta-voltar img{
+    width: 25px;
+}
+.menu-icon img{
+    width:30px;
+    cursor: pointer;
+}
+
+section.nome-pagina{
+    background-color: #C5F022;
+    text-align: center;
+    display: flex;
+    height: 61px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+h3{
+    font-size: 10px;
+    color: #FFF;
+    font-weight: 700;
+    line-height: normal;
+    font-style: normal;
+}
+h1{
+    font-size: 20px;
+    margin:0;
+}
+.treino-dia{
+    margin-top: 2em;
+    text-align: center;
+}
+.treino-dia h2{
+    font-size: 30px;
+    color: white;
+}
+.treino-dia div{
+    padding: 100px;
+    border-radius: 10px;
+    margin: 30px;
+    background-color: #1E1C37;
+}
+.treino-dia h1{
+    font-size: 30px;
+    color: white;
+}
+menu{
+    /*position: relative;*/
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #3B3E52;
+    padding: 1em;
+
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+menu img{
+    margin-bottom: 5px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+menu div a {
+    color:white ;
+    text-decoration: none;
+    display: grid;
+    align-items: center;
+}
+
+.menu-lateral {
+    position: fixed;
+    top: 0;
+    right: -500%;
+    width: 50%;
+    height: 100vh;
+    background-color: #3B3E52;
+    transition: right 0.3s ease;
+    z-index: 999;
+    padding: 2em;
+    color: white;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.fechar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 15px;
+    gap: 5em;
+
+}
+.menu-lateral ul>div{
+    display: block;
+    justify-content: start;
+    padding-bottom: 24px;
+    margin-bottom: 3em;
+}
+ul > div:nth-of-type(-n+2) {
+  border-bottom: 1px solid #D9D9D9;
+}
+
+.menu-lateral li a{
+    display: inline-flex;
+    align-items: center;
+    justify-content: start;
+    gap: 15px;
+    font-size: 15px;
+
+}
+.menu-lateral img{
+    width: 26px;
+}
+.menu-lateral.ativo {
+    right: 0;
+}
+
+.menu-lateral .fechar-menu {
+    background: none;
+    border: none;
+    font-size: 2em;
+    color: white;
+    /*position: absolute;*/
+    right: 1em;
+    cursor: pointer;
+}
+
+.menu-lateral ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 4em;
+}
+
+.menu-lateral li {
+    margin-bottom: 24px;
+}
+
+.menu-lateral a {
+    text-decoration: none;
+    color: white;
+    font-size: 1.2em;
+}
+main{
+    padding-bottom: 100px;
+}
+.container{
+    text-align: center;
+    margin-top: 44px;
+    
+    /*max-width: 375px;
+    padding: 0 16px;*/
+}
+.editar-foto img{
+    width: 122px;
+    flex-shrink: 0;
+    height: 122px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.container h2, p{
+    font-size: 20px;
+    color: white;
+}
+.acoes-perfil a{
+    font-size: 15px;
+    color: white;
+    text-decoration: none;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 19px;
+    border-radius: 10px;
+    background: #4E5A6E;
+    padding: 1em;
+    height: 20px;
+    flex-shrink: 0;
+    width: 310px;
+}
+.acoes-perfil{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 23px;
+}
+.acoes-perfil img{
+    width: 30px;
+    flex-shrink: 0;
+    aspect-ratio: 1/1;
+    height: 30px;
+    margin: 0;
+}
+span{
+    margin: 0;
+}
+.sair_perfil {
+    margin-top:73px;
+    height: 40px;
+    flex-shrink: 0;
+    width: 340px;
+    border-radius: 50px;
+    background: #C5F022;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    color: #070A22;
+    font-size: 20px;
+    font-weight:normal;
+}
+.sair_perfil img{
+    width: 26.833px;
+    flex-shrink: 0;
+    aspect-ratio: 26.83/26.83;
+    height: 26.833px;
+    margin: 0 0px 0px 8px;
+}
+
+.seta-voltar {
+    margin-left: 0;
+}
+
+/* Estilos para o formulário */
+.form-publicar {
+    width: 340px;
+}
+
+.form-group {
+    margin-bottom: 10px;
+}
+
+.form-group label {
+    font-weight: semi-bold;
+    color: #fff;
+    font-size: 15px;
+    display: block;
+    text-align: left;
+    margin-left: 0;
+}
+
+.form-group select{
+    color: #fff;
+    width: 340px;
+    padding: 5px 0;
+    border: none;
+    border-radius: 5px;
+    font-size: 12px;
+    background-color: #3B3E52;
+}
+
+.form-group textarea {
+    color: #fff;
+    width: 340px;
+    padding: 5px 0;
+    border: none;
+    border-radius: 5px;
+    font-size: 12px;
+    background-color: #3B3E52;
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+/* Estilos para a área de upload de imagem */
+.image-upload-container {
+    margin-top: 10px;
+}
+
+.image-upload-box {
+    width: 130px;
+    height: 130px;
+    border: none;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    background-color: #c4c4c4;
+}
+
+.image-input-hidden {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+}
+
+.upload-placeholder {
+    text-align: center;
+    color: #6c757d;
+    padding: 20px;
+}
+
+
+.upload-placeholder p {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+
+.image-preview {
+    max-width: 130px;
+    max-height: 130px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
+/* Botões do formulário */
+.form-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.btn-cancelar {
+    background-color: #4E5A6E;
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 600;
+    text-align: center;
+    border: none;
+    width: 165px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.btn-publicar {
+    padding: 5px;
+    background-color: #C5F022;
+    color: #000;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: 600;
+    text-align: center;
+    border: none;
+    width: 165px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+

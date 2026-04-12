@@ -1,0 +1,541 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap');
+*{
+    margin:0 auto;
+    font-family: 'Lexend Deca', sans-serif;
+}
+body {
+    margin-top: 109px;
+    background-color: #070A22;
+}
+header{
+    background-color: #070A22;
+    padding: 2em;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 45px;
+    z-index: 999;
+}
+.logo-h {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+.logo-h img{
+    width: 50px;
+    cursor: pointer;
+}
+.seta-voltar img{
+    width: 25px;
+}
+.seta-voltar{
+    margin-left: 0 ;
+}
+.menu-icon img{
+    width:30px;
+    cursor: pointer;
+}
+.menu-icon {
+    position: absolute;
+    right: 20px;
+  }
+
+section.nome-pagina{
+    background-color: #C5F022;
+    text-align: center;
+    display: flex;
+    height: 61px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+h1 {
+    font-size: 20px;
+    margin:0;
+}
+.iniciar-treino{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+    text-decoration: none;
+    border-radius: 0px 0px 10px 10px;
+    background: #C5F022;
+    width: 340px;
+    flex-shrink: 0;
+    height: 39px;
+}
+.container{
+    margin-top: 2em;
+    max-width: 340px;
+    width: 100%;
+}
+.container h2{
+    color: white;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    text-align: left;
+    margin-bottom: 13px;
+}
+.container h1{
+    color: white;
+    text-align: center;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    padding: 16px;
+}
+
+menu{
+    /*position: relative;*/
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #3B3E52;
+    padding: 1em;
+
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+menu img{
+    margin-bottom: 5px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+menu div a {
+    font-size: 25px;
+    color:white ;
+    text-decoration: none;
+    display: grid;
+    align-items: center;
+}
+h3 {
+    font-size: 10px;
+    color: #FFF;
+    font-weight: 700;
+    line-height: normal;
+    font-style: normal;
+    margin-bottom: 5px;
+}
+h3.filtro{
+    font-size: 12px;
+    color: #7689A9;
+}
+.menu-lateral {
+    position: fixed;
+    top: 0;
+    right: -500%;
+    width: 50%;
+    height: 100vh;
+    background-color: #3B3E52;
+    transition: right 0.3s ease;
+    z-index: 999;
+    padding: 2em;
+    color: white;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.fechar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 15px;
+    gap: 5em;
+
+}
+.menu-lateral ul>div{
+    display: block;
+    justify-content: start;
+    padding-bottom: 24px;
+    margin-bottom: 3em;
+}
+ul > div:nth-of-type(-n+3) {
+  border-bottom: 1px solid #D9D9D9;
+}
+
+.menu-lateral li a{
+    display: inline-flex;
+    align-items: center;
+    justify-content: start;
+    gap: 15px;
+    font-size: 15px;
+
+}
+main{
+    padding-bottom: 100px;
+}
+.menu-lateral img{
+    width: 26px;
+}
+.menu-lateral.ativo {
+    right: 0;
+}
+
+.menu-lateral .fechar-menu {
+    background: none;
+    border: none;
+    font-size: 2em;
+    color: white;
+    /*position: absolute;*/
+    right: 1em;
+    cursor: pointer;
+}
+
+.menu-lateral ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 4em;
+}
+
+.menu-lateral li {
+    margin-bottom: 24px;
+}
+
+.menu-lateral a {
+    text-decoration: none;
+    color: white;
+    font-size: 1.2em;
+}
+li.lida{
+    color: #FFF;
+}
+li{
+    list-style: none;
+    color: #FFF;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: normal;
+    font-style: normal;
+    margin-bottom: 10px;
+}
+
+
+.data-container {
+    display: flex;
+    gap: 1rem;
+}
+.notificacao{
+    margin-top: 30px;
+    width: 340px;
+
+}
+
+.nome-data{
+    margin: 0;
+    background-color: #7689A9;
+    height: 40px;
+    width: 340px;
+    border-radius: 10px 10px 0px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+strong{
+    color: white;
+    margin-right: 15px;
+    font-size: 10px;
+    font-weight: 400;
+    line-height: normal;
+    font-style: normal;
+}
+.conteudo{
+    background-color: #1E1C37;
+    height: 60px;
+    width: 340px;
+    border-radius: 0px 0px 10px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    margin-bottom: 10px;
+}
+.conteudo p {
+    margin-left: 15px;
+}
+.notificacao p{
+    color: white;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin-left: 15px;
+}
+.professor-card img{
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 20px;
+}
+.professor-card h3{
+    font-size: 17px;
+    margin-bottom: 5px;
+    color: white;
+}
+.professor-card p{
+    color: white;
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+.professor-card a{
+    background-color: #C5F022;
+    color: black;
+    width: 100px;
+    height: 24px;
+    font-size: 11px;
+    text-decoration: none;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+section.lista-professores{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+.professor-card {
+    width: 160px;
+    height: 225px;
+    background-color: #1E1C37;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.container input {
+    width: 340px;
+    height: 38px;
+    border-radius: 100px;
+    border: none;
+    background-color: #4E5A6E;
+    color: #FFF;
+}
+.search-wrapper {
+    position: relative;
+}
+.search-wrapper img {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+.mensagem-nao-encontrado {
+    text-align: left;
+    font-size: 1.1em;
+    color: white;
+    margin-top: 20px;
+}
+
+.tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-weight: bold;
+    color: #3B3E52;
+    border-bottom: 1px solid ;
+}
+
+.tab-btn.active {
+    color: #C5F022;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+
+tr {
+    color: white;
+}
+
+
+
+
+
+
+
+
+
+.solicitacoes-container {
+    flex-direction: column;
+    gap: 15px;
+}
+
+.solicitacao-card {
+    flex-wrap: wrap;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #3B3E52;
+    transition: 0.3s;
+    color: white;
+    margin-bottom: 15px;
+}
+.solicitacao-linha {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+span.label{
+    margin: 0;
+    color: #7689A9;
+    font-size: 12px;
+}
+strong{
+    margin: 0;
+    color: #7689A9;
+    font-size: 12px;
+}
+span.valor{
+    margin: 0;
+    color: white;
+    font-size: 15px;
+}
+.solicitacao-card:hover {
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+
+.solicitacao-info p {
+    margin-bottom: 10px;
+    color: white;
+}
+.ver_treinos{
+    text-decoration: none;
+    color: white;
+    font-weight: medium;
+    border: 1px solid;
+    border-radius: 10px;
+    width: 100%;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    cursor: pointer;
+}
+.confirmar_recusar .aceitar{
+    text-decoration: none;
+    color: white;
+    background-color: green;
+    font-weight: medium;
+    border-radius: 10px;
+    width: 100%;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    cursor: pointer;
+}
+.confirmar_recusar .recusar{
+    text-decoration: none;
+    color: white;
+    background-color: red;
+    font-weight: medium;
+    border-radius: 10px;
+    width: 100%;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    cursor: pointer;
+}
+.confirmar_recusar{
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.ver_treinos a {
+    color: white;
+    text-decoration: none;
+}
+.solicitacao-status {
+    min-width: 120px;
+    text-align: right;
+    font-weight: bold;
+}
+
+.status-aberta { color: orange; font-weight: bold;}
+.status-concluida { color: green; font-weight: bold; }
+.status-recusada { color: red; font-weight: bold;}
+
+
+
+.data-container {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 15px;
+}
+.custom-date {
+    width: 165px;
+    height: 45px;
+    background-color: #3e475b;
+    color: white;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    /*position: relative;*/
+}
+.custom-date img {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+}
+#label-inicio,#label-fim {
+    font-size: 12px;
+}
+#label-inicio-alunos,#label-fim-alunos {
+    font-size: 12px;
+}
+.custom-date input[type="date"] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    pointer-events: none;
+}
+.container select {
+    width: 340px;
+    height: 40px;
+    border-radius: 100px;
+    border: none;
+    background-color: #3e475b;
+    color: #FFF;
+    margin-bottom: 15px;
+    padding-left: 5px;
+}
+.sem-solicitacao{
+    color: white;
+}
