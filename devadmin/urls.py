@@ -104,6 +104,7 @@ urlpatterns = [
     path('excluir_exercicio/<int:exercicio_id>/', viewsAdmin.excluir_exercicio, name='excluir_exercicio'),
     path('professor/<int:pk>/inativar-reativar/', viewsAdmin.inativar_reativar_professor, name='inativar_reativar_professor'),
     path('aluno/<int:pk>/inativar-reativar/', viewsAdmin.inativar_reativar_aluno, name='inativar_reativar_aluno'),
+    path('cadastrar-professor/', viewsAdmin.cadastrar_professor, name='cadastrar_professor'),
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

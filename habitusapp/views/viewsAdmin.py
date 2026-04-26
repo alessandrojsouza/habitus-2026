@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.models import User, Group
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.http import require_POST
 from habitusapp.models import Admin
 from django.contrib import messages
@@ -16,6 +16,7 @@ from django.db.models import Q
 
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.csrf import csrf_exempt
+from habitusapp.forms import ProfessorCadastroForm
 
 
 @login_required
@@ -253,3 +254,19 @@ def inativar_reativar_aluno(request, pk):
         messages.success(request, f'Conta do aluno {aluno.nome} reativada com sucesso!')
     
     return redirect('ver_aluno', aluno_id=pk)
+
+
+
+def eh_admin_gestor(user):
+    return user.groups.filter(name='Admin_Gestor').exists()
+
+@user_passes_test(eh_admin_gestor)
+def cadastrar_professor(request):
+    if request.method == 'POST':
+        form = ProfessorCadastroForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('gerenciar_professores') # Redireciona para a lista
+    else:
+        form = ProfessorCadastroForm()
+    return render(request, 'PagsAdminGestor/cadastrar_professor.html', {'form': form})
