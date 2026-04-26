@@ -430,3 +430,31 @@ class SolicitacaoDeTreinoForm(forms.ModelForm):
                 'class': 'descricao-textarea'
             }),
         }
+
+
+class ProfessorCadastroForm(forms.ModelForm):
+    email = forms.EmailField(required=True)
+    # Mantemos o CharField para o formulário
+    nome_completo = forms.CharField(max_length=150, label="Nome Completo")
+    password = forms.CharField(widget=forms.PasswordInput())
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password']
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        
+        # O segredo: Pegamos o 'nome_completo' e jogamos no 'first_name' do User
+        user.first_name = self.cleaned_data.get('nome_completo')
+        
+        # Define a senha (use o password vindo do POST se você adicionou o campo)
+        # Se não adicionou no form, pode usar uma padrão para teste:
+        password = self.cleaned_data.get('password')
+        if password:
+            user.set_password(password)
+
+        if commit:
+            user.save()
+        return user
+

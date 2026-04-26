@@ -30,9 +30,8 @@
         </div>
     </header>
       
-{% if user.is_authenticated %}
+    {% if user.is_authenticated %}
         {% if user.groups.first.name == "Aluno" %}
-            <!-- MENU PARA ALUNO -->
             <nav id="menu-lateral" class="menu-lateral">
                 <div class="fechar">
                     <h1>Menu</h1>
@@ -47,7 +46,6 @@
                     </div>
                     <div>
                         <li><a href="{% url 'configuracoes' %}"><img src="{% static 'icones-site/configuracoes.png' %}" alt="">Configurações</a></li>
-                        <!--<li><a href="{% url 'feed' %}"><img src="{% static 'icones-site/icone-avaliar.png' %}" alt="">Avaliar</a></li>-->
                         <li><a href="{% url 'reportar_erro' %}"><img src="{% static 'icones-site/reportar-erro.png' %}" alt="">Reportar erro</a></li>
                     </div>
                     <div>
@@ -58,7 +56,6 @@
             </nav>
 
         {% elif user.groups.first.name == "Professor" %}
-            <!-- MENU PARA PROFESSOR -->
             <nav id="menu-lateral" class="menu-lateral">
                 <div class="fechar">
                     <h1>Menu</h1>
@@ -72,13 +69,11 @@
                         <li><a href="{% url 'solicitar_novo_treino' %}"><img src="{% static 'icones-site/solicitar-treino.png' %}" alt="">Solicitar novo treino</a></li>
                     </div>
                     <div>
-
                         <li><a href="{% url 'gerenciar_alunos' %}"><img src="{% static 'icones-site/icone-alunos.png' %}" alt="">Alunos</a></li>
                         <li><a href="{% url 'gerenciar_noticias' %}"><img src="{% static 'icones-site/icone-noticias.png' %}" alt="">Notícias</a></li>
                     </div>
                     <div>
                         <li><a href="{% url 'configuracoes' %}"><img src="{% static 'icones-site/configuracoes.png' %}" alt="">Configurações</a></li>
-                        <!--<li><a href="{% url 'feed' %}"><img src="{% static 'icones-site/icone-avaliar.png' %}" alt="">Avaliar</a></li>-->
                         <li><a href="{% url 'reportar_erro' %}"><img src="{% static 'icones-site/reportar-erro.png' %}" alt="">Reportar erro</a></li>
                     </div>
                     <div>
@@ -89,7 +84,6 @@
             </nav>
 
         {% elif user.groups.first.name == "Admin" %}
-            <!-- MENU PARA ADMIN -->
             <nav id="menu-lateral" class="menu-lateral">
                 <div class="fechar">
                     <h1>Menu</h1>
@@ -110,7 +104,6 @@
                     </div>
                     <div>
                         <li><a href="{% url 'configuracoes' %}"><img src="{% static 'icones-site/configuracoes.png' %}" alt="">Configurações</a></li>
-                        <!--<li><a href="{% url 'feed' %}"><img src="{% static 'icones-site/icone-avaliar.png' %}" alt="">Avaliações</a></li>-->
                         <li><a href="{% url 'reportar_erro' %}"><img src="{% static 'icones-site/reportar-erro.png' %}" alt="">Reportar erro</a></li>
                     </div>
                     <div>
@@ -119,15 +112,33 @@
                     </div>
                 </ul>
             </nav>
-        {% endif %}
-    {% endif %}
-    <main>
-    <section class="nome-pagina">
-        <h1>Perfil</h1>
-    </section>
+
+        {% elif user.groups.first.name == "Admin_Gestor" %}
+            <nav id="menu-lateral" class="menu-lateral">
+                <div class="fechar">
+                    <h1>Menu</h1>
+                    <button class="fechar-menu" onclick="toggleMenu()">✕</button>
+                </div>
+                <ul>
+                    <div>
+                        <li><a href="{% url 'cadastrar_professor' %}"><img src="{% static 'icones-site/icone-professores.png' %}" alt="">Cadastrar Professor</a></li>
+                    </div>
+                    <div>
+                        <li><a href="{% url 'configuracoes' %}"><img src="{% static 'icones-site/configuracoes.png' %}" alt="">Configurações</a></li>
+                        <li><a href="{% url 'reportar_erro' %}"><img src="{% static 'icones-site/reportar-erro.png' %}" alt="">Reportar erro</a></li>
+                    </div>
+                    <div>
+                        <li><a href="{% url 'desenvolvedores' %}"><img src="{% static 'icones-site/desenvolvedores.png' %}" alt="">Desenvolvedores</a></li>
+                        <li><a href="{% url 'sobre_habitus' %}"><img src="{% static 'icones-site/sobre.png' %}" alt="">Sobre o Habitus</a></li>
+                    </div>
+                </ul>
+            </nav>
+        {% endif %} {% endif %} <main>
+        <section class="nome-pagina">
+            <h1>Perfil</h1>
+        </section>
         <section class="container">
             <div class="editar-foto">
-                <!-- Ao clicar na foto, abre o input de upload -->
                 <a href="#" onclick="document.getElementById('id_nova_foto').click(); return false;" class="foto-perfil-wrapper">
                     {% if perfil.foto_perfil %}
                         <img id="preview-foto"
@@ -147,24 +158,19 @@
                     <img src="{% static 'icones-site/editar-foto-perfil.png' %}" alt="Ícone editar" class="icone-editar">
                 </a>
 
-
                 <h2>{{ perfil.nome }}</h2>
                 <p>{% if perfil.matricula %}{{ perfil.matricula }}{% else %}Sem matrícula{% endif %}</p>
 
-                <!-- Input oculto para escolher nova foto -->
                 <form method="POST" enctype="multipart/form-data" action="{% url 'editar_foto' %}">
                     {% csrf_token %}
                     
-                    <!-- Input de nova foto -->
                     <input type="file" name="nova_foto" id="id_nova_foto" accept="image/*" style="display:none;" onchange="previewNovaFoto()">
 
-                    <!-- Botões de ação -->
                     <div class="botoes">
                         <button type="button" id="remover-foto-btn" onclick="removerNovaFoto()" style="display:none;">Cancelar</button>
                         <button type="submit" id="salvar-foto-btn" style="display:none;">Salvar</button>
                     </div>
 
-                    <!-- Botão de usar foto padrão -->
                     <button type="submit" id="foto-padrao" style="display:none;" name="usar_foto_padrao" class="btn-padrao">
                         Usar foto padrão
                     </button>
@@ -191,6 +197,7 @@
                     <span>Configurações</span>
                 </a>
             </div>
+            
             <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">
                 {% csrf_token %}
             </form>
@@ -201,7 +208,8 @@
             </a>
 
         </section>
-
+    </main> 
+    
     <menu>
         <div>
             <a href="{% url 'feed' %}">
@@ -221,8 +229,6 @@
                 <h3>Perfil</h3>
             </a>
         </div>
-    </main> 
-    
     </menu>
 </body>
 </html>

@@ -1,0 +1,179 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Professor - Habitus</title>
+    <link rel="icon" href="{% static 'icones-site/logo-h-pequena.png' %}">
+    <link rel="stylesheet" href="{% static 'css/usuario/criar_conta.css' %}">
+    <link rel="stylesheet" href="{% static 'css/usuario/aviso.css' %}">
+    <script src="{% static 'js/usuario/aviso.js' %}"></script>
+</head>
+<body>
+    <script>
+        function previewImagem() {
+            const input = document.getElementById('id_foto_perfil');
+            const preview = document.getElementById('preview-foto');
+            const removerBtn = document.getElementById('remover-foto-btn');
+
+            const file = input.files[0];
+            if (file) {
+                preview.src = URL.createObjectURL(file);
+                removerBtn.style.display = 'inline-block';
+            }
+        }
+
+        function removerFoto() {
+            const input = document.getElementById('id_foto_perfil');
+            const preview = document.getElementById('preview-foto');
+            const removerBtn = document.getElementById('remover-foto-btn');
+            input.value = '';
+            preview.src = "{% static 'icones-site/sem-foto.png' %}";
+            removerBtn.style.display = 'none';
+        }
+    </script>
+
+    <main class="login-container">
+        <div class="login-header">
+            <img src="{% static 'icones-site/logo-nome-completo.png' %}" alt="Logo Habitus">
+        </div>
+
+        <div class="login-box">
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <p>{{ field|title }}: {{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <label for="id_foto_perfil" class="input_foto">
+                    <img id="preview-foto" src="{% static 'icones-site/sem-foto.png' %}" alt="Foto de Perfil" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;">
+                </label>
+                <input type="file" name="foto_perfil" id="id_foto_perfil" accept="image/*" style="display: none;" onchange="previewImagem()">
+                <h2 style="text-align: center; color: white;">Foto do Professor</h2>
+                <button type="button" id="remover-foto-btn" onclick="removerFoto()" style="display:none; margin: 0 auto 20px auto;">Remover Foto</button>
+
+                <h1>DADOS PROFISSIONAIS</h1>
+
+                <label for="id_nome">Nome Completo:</label>
+                <input type="text" name="nome_completo" id="id_nome" required placeholder="Nome do docente">
+
+                <div class="usuario-data" style="display: flex; gap: 20px;"> <div>
+                        <label for="id_matricula">Matrícula:</label>
+                        <input type="text" name="matricula" id="id_matricula" placeholder="Ex: 202412345">
+                    </div>
+                    <div>
+                        <label for="id_data_admissao">Data de Admissão:</label>
+                        <input type="date" name="data_admissao" id="id_data_admissao" required>
+                    </div>
+                </div>
+
+                <label for="id_inst_formacao">Instituição de Formação:</label>
+                <input type="text" name="inst_formacao" id="id_inst_formacao" placeholder="Ex: IFRN / UFRN">
+
+                <label for="id_tipo_trabalho">Cargo/Função:</label>
+                <select name="tipo_trabalho" id="id_tipo_trabalho" style="width: 100%; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+                    <option value="Professor(a)" selected>Professor(a)</option>
+                </select>
+
+                <hr style="border: 0.5px solid #444; margin: 20px 0;">
+                <h1>DADOS PESSOAIS</h1>
+
+                <div class="usuario-data">
+                    <div>
+                        <label for="id_username">Usuário (Login):</label>
+                        <input type="text" name="username" id="id_username" required placeholder="username.docente">
+                    </div>
+                    <div>
+                        <label for="id_data_nasc">Data de Nascimento:</label>
+                        <input type="date" name="data_nasc" id="id_data_nasc" required>
+                    </div>
+                </div>
+
+                <div class="cpf-telefone">
+                    <div>
+                        <label for="id_cpf">CPF:</label>
+                        <input type="text" name="cpf" id="id_cpf" required placeholder="000.000.000-00" maxlength="14">
+                    </div>
+                    <div>
+                        <label for="id_telefone">Telefone:</label>
+                        <input type="text" name="telefone" id="id_telefone" placeholder="(84) 98888-8888" maxlength="15">
+                    </div>
+                </div>
+
+                <label for="id_email">E-mail Institucional:</label>
+                <input type="email" name="email" id="id_email" required placeholder="professor@escolar.com">
+
+                <label for="id_password">Definir Senha de Acesso:</label>
+                <div style="position: relative; width: 100%; margin-bottom: 20px;">
+                    <input type="password" name="password" id="senha" required placeholder="Crie uma senha com no mínimo 8 dígitos">
+                    <img 
+                        src="{% static 'icones-site/olho-fechado.png' %}" 
+                        id="iconeSenha" 
+                        data-aberto="{% static 'icones-site/olho-aberto.png' %}" 
+                        data-fechado="{% static 'icones-site/olho-fechado.png' %}" 
+                        onclick="toggleSenha()" 
+                        style="width: 20px; height: 20px; cursor: pointer; position: absolute; right: 15px; top: 50%; transform: translateY(-50%);">
+                </div>
+
+                <div class="botoes">
+                    <a href="javascript:history.back()">Voltar</a>
+                    <button type="submit">Cadastrar Professor</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        function toggleSenha() {
+            const senha = document.getElementById("senha");
+            const icone = document.getElementById("iconeSenha");
+            const caminhoAberto = icone.getAttribute("data-aberto");
+            const caminhoFechado = icone.getAttribute("data-fechado");
+
+            if (senha.type === "password") {
+                senha.type = "text";
+                icone.src = caminhoAberto;
+            } else {
+                senha.type = "password";
+                icone.src = caminhoFechado;
+            }
+        
+        
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            const cpfInput = document.getElementById("id_cpf");
+            const telefoneInput = document.getElementById("id_telefone");
+
+            cpfInput.addEventListener("input", function (e) {
+                let value = cpfInput.value.replace(/\D/g, '');
+                if (value.length > 11) value = value.slice(0, 11);
+                value = value.replace(/(\d{3})(\d)/, "$1.$2");
+                value = value.replace(/(\d{3})(\d)/, "$1.$2");
+                value = value.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+                cpfInput.value = value;
+            });
+
+            telefoneInput.addEventListener("input", function (e) {
+                let value = telefoneInput.value.replace(/\D/g, '');
+                if (value.length > 11) value = value.slice(0, 11);
+                value = value.replace(/(\d{2})(\d)/, "($1) $2");
+                if (value.length > 9) {
+                    value = value.replace(/(\d{5})(\d)/, "$1-$2");
+                } else {
+                    value = value.replace(/(\d{4})(\d)/, "$1-$2");
+                }
+                telefoneInput.value = value;
+            });
+        });
+    </script>
+</body>
+</html>
