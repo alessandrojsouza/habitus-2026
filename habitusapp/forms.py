@@ -1,10 +1,10 @@
 from datetime import date
 from django import forms
 from django.contrib.auth import authenticate
-from django import forms
 from django.contrib.auth.models import User, Group
-from .models import Aluno, Exercicio
+from .models import Aluno, Exercicio, Treino, TreinoExercicio, Progresso, SolicitacaoDeTreino, Professor, Noticia
 from django.core.exceptions import ValidationError
+from django.forms import inlineformset_factory
 
 class EmailLoginForm(forms.Form):
     email = forms.EmailField()
@@ -26,8 +26,6 @@ class EmailLoginForm(forms.Form):
         self.cleaned_data['user'] = user
         return self.cleaned_data
 
-# 
-
 class AlunoForm(forms.ModelForm):
     username = forms.CharField(label='Nome de usuário')
     email = forms.EmailField(label='E-mail')
@@ -46,7 +44,6 @@ class AlunoForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Estilização dos campos
         self.fields['nome'].widget.attrs.update({'placeholder': 'Insira o nome do aluno', 'class': 'form-input'})
         self.fields['matricula'].widget.attrs.update({'placeholder': 'Insira a matrícula', 'class': 'form-input'})
         self.fields['cpf'].widget.attrs.update({'placeholder': 'xxx.xxx.xxx-xx', 'class': 'form-input'})
@@ -55,8 +52,7 @@ class AlunoForm(forms.ModelForm):
         self.fields['foto_perfil'].widget.attrs.update({'class': 'form-file', 'style': 'display: none;', 'id': 'id_foto_perfil', 'accept': 'image/*', 'onchange': 'previewImagem()'})
         self.fields['username'].widget.attrs.update({'placeholder': 'Crie um nome de usuário', 'class': 'form-input'})
         self.fields['email'].widget.attrs.update({'placeholder': 'Insira o e-mail do aluno', 'class': 'form-input'})
-        self.fields['password'].widget.attrs.update({'id': 'senha', 'placeholder': 'Crie uma senha com no mínimo 8 dígitos', 'required': 'required'
-})
+        self.fields['password'].widget.attrs.update({'id': 'senha', 'placeholder': 'Crie uma senha com no mínimo 8 dígitos', 'required': 'required'})
 
     def clean_username(self):
         username = self.cleaned_data['username']
@@ -78,17 +74,11 @@ class AlunoForm(forms.ModelForm):
 
     def clean_matricula(self):
         matricula = self.cleaned_data.get('matricula')
-
-        # Se estiver vazio, tudo bem (é opcional)
         if not matricula:
             return None
-
-        # Se informado, verificar duplicidade
         if Aluno.objects.filter(matricula=matricula).exists():
             raise ValidationError('Esta matrícula já está cadastrada.')
-
         return matricula
-
 
     def save(self, commit=True):
         user = User.objects.create_user(
@@ -106,7 +96,6 @@ class AlunoForm(forms.ModelForm):
             aluno.save()
         return aluno
 
-
 class AlunoEditForm(forms.ModelForm):
     class Meta:
         model = Aluno
@@ -121,17 +110,12 @@ class AlunoEditForm(forms.ModelForm):
         self.fields['matricula'].widget.attrs.update({'placeholder': 'Matrícula (opcional)', 'class': 'form-input'})
         self.fields['telefone'].widget.attrs.update({'placeholder': '(ddd) xxxxx-xxxx (opcional)', 'class': 'form-input'})
 
-
     def clean_matricula(self):
         matricula = self.cleaned_data['matricula']
-        if matricula:  # Só valida se não estiver vazio
+        if matricula:
             if Aluno.objects.filter(matricula=matricula).exclude(pk=self.instance.pk).exists():
                 raise ValidationError('Esta matrícula já está cadastrada para outro aluno.')
         return matricula
-
-
-from django import forms
-from habitusapp.models import Noticia
 
 class NoticiaForm(forms.ModelForm):
     class Meta:
@@ -148,9 +132,6 @@ class NoticiaForm(forms.ModelForm):
             }),
         }
 
-from django import forms
-from .models import Treino
-
 class TreinoForm(forms.ModelForm):
     class Meta:
         model = Treino
@@ -160,8 +141,6 @@ class TreinoForm(forms.ModelForm):
             'data_fim': forms.DateInput(attrs={'type': 'date'}),
         }
 
-
-from .models import Professor 
 class ProfessorForm(forms.ModelForm):
     username = forms.CharField(
         label='Nome de usuário',
@@ -191,10 +170,9 @@ class ProfessorForm(forms.ModelForm):
     ) 
     data_nasc = forms.DateField(label='Data de nascimento', widget=forms.DateInput(attrs={'type': 'date'}))
     
-    
     class Meta:
         model = Professor
-        fields = ['nome','username', 'password', 'email', 'password', 'telefone', 'foto_perfil','data_nasc', 'tipo_trabalho', 'data_admissao', 'inst_formacao']
+        fields = ['nome','username', 'password', 'email', 'telefone', 'foto_perfil','data_nasc', 'tipo_trabalho', 'data_admissao', 'inst_formacao']
         widgets = {
             'data_admissao': forms.DateInput(attrs={'type': 'date'}),
             'tipo_trabalho': forms.Select(),
@@ -202,35 +180,24 @@ class ProfessorForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Só tenta acessar o user se o professor já existir (edição)
         if self.instance and self.instance.pk and hasattr(self.instance, 'user') and self.instance.user:
             self.fields['username'].initial = self.instance.user.username
             self.fields['email'].initial = self.instance.user.email
 
     def clean_username(self):
         username = self.cleaned_data['username']
-      
-      # Verifica se o username foi alterado
         if hasattr(self.instance, 'user') and self.instance.user and self.instance.user.username == username:
-            return username  # Não mudou, não precisa validar
-          
-      # Verifica se o username já existe
+            return username 
         if User.objects.filter(username=username).exists():
             raise ValidationError('Este nome de usuário já está em uso. Por favor, escolha outro.')
-
         return username
 
     def clean_email(self):
         email = self.cleaned_data['email']
-    
-    # Verifica se o email foi alterado
         if hasattr(self.instance, 'user') and self.instance.user and self.instance.user.email == email:
-            return email  # Não mudou, não precisa validar
-        
-    # Verifica se o email já existe
+            return email 
         if User.objects.filter(email=email).exists():
             raise ValidationError('Este email já está em uso. Por favor, utilize outro.')
-    
         return email
 
     def clean_cpf(self):
@@ -245,8 +212,6 @@ class ProfessorForm(forms.ModelForm):
             raise ValidationError('Esta matricula já está cadastrado.')
         return matricula
         
-
-    
     def save(self, commit=True):
         username = self.cleaned_data.get('username')
         email = self.cleaned_data.get('email')
@@ -273,7 +238,6 @@ class ProfessorForm(forms.ModelForm):
             professor.save()
         return professor
 
-    
 class ProfessorEditForm(forms.ModelForm):
     username = forms.CharField(
         label='Nome de usuário',
@@ -287,8 +251,6 @@ class ProfessorEditForm(forms.ModelForm):
     )
     class Meta:
         model = Professor
-
-        # Liste aqui apenas os campos que podem ser editados
         fields = [
             'nome',
             'telefone',
@@ -311,7 +273,6 @@ class ProfessorEditForm(forms.ModelForm):
             user.save()
             professor.save()
         return professor
-
 
 class ExercicioForm(forms.ModelForm):
     class Meta:
@@ -341,15 +302,10 @@ class ExercicioForm(forms.ModelForm):
             })
         }
 
-from django import forms
-from django.forms import inlineformset_factory
-from habitusapp.models import Treino, TreinoExercicio
-
 class TreinoFormEdit(forms.ModelForm):
     class Meta:
         model = Treino
         fields = ["nome", "data_inicio", "data_fim", "nivel"] 
-        
 
 class TreinoExercicioForm(forms.ModelForm):
     class Meta:
@@ -360,20 +316,17 @@ class TreinoExercicioForm(forms.ModelForm):
             "observacao": forms.TextInput(attrs={'placeholder': 'Insira observações se necessário sobre o exercício'})
         }
 
-# Inline formset: conecta os TreinoExercicio ao Treino
 TreinoExercicioFormSet = inlineformset_factory(
     Treino, TreinoExercicio,
     form=TreinoExercicioForm,
-    extra=0,   # quantos formulários em branco para adicionar novos
+    extra=0,
     can_delete=True
 )
-
-from .models import Progresso
 
 class ProgressoForm(forms.ModelForm):
     class Meta:
         model = Progresso
-        exclude = ['usuario', 'progresso_valor', 'concluidos', 'dias_treinados', 'data_entrada']  # Remove data_entrada do formulário
+        exclude = ['usuario', 'progresso_valor', 'concluidos', 'dias_treinados', 'data_entrada']
         widgets = {
             'nivel': forms.Select(attrs={'class': 'form-select'}),
             'objetivo': forms.Select(attrs={'class': 'form-select'}),
@@ -381,19 +334,15 @@ class ProgressoForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
-        # Torna TODOS os campos opcionais
         for field in self.fields:
             self.fields[field].required = False
 
         self.fields['nivel'].choices = [('', 'Selecione o nível (opcional)')] + list(Progresso.NivelChoices.choices)
         self.fields['objetivo'].choices = [('', 'Selecione o objetivo (opcional)')] + list(Progresso.ObjetivoChoices.choices)
 
-        # Remove required dos selects
         self.fields['nivel'].widget.attrs.update({'class': 'form-select'})
         self.fields['objetivo'].widget.attrs.update({'class': 'form-select'})
         
-        # Placeholders
         campos_cm = ['cintura', 'abdomen', 'torax', 'quadril', 'coxa_direita', 'coxa_esquerda',
                     'panturrilha_direita', 'panturrilha_esquerda', 'braco_direito', 'braco_esquerdo',
                     'tricipital', 'subescapular', 'axilar_media', 'suprailiaca', 'abdominal', 'coxa', 'panturrilha']
@@ -415,9 +364,6 @@ class ProgressoForm(forms.ModelForm):
                     'placeholder': 'cm (opcional)'
                 })
 
-from django import forms
-from .models import SolicitacaoDeTreino
-
 class SolicitacaoDeTreinoForm(forms.ModelForm):
     class Meta:
         model = SolicitacaoDeTreino
@@ -432,29 +378,27 @@ class SolicitacaoDeTreinoForm(forms.ModelForm):
         }
 
 
+# ==========================================
+# NOVA CLASSE PROFESSOR CADASTRO FORM
+# ==========================================
 class ProfessorCadastroForm(forms.ModelForm):
+    # Campos que vão para o auth_user
+    username = forms.CharField(max_length=150, required=True)
+    password = forms.CharField(widget=forms.PasswordInput, required=True)
     email = forms.EmailField(required=True)
-    # Mantemos o CharField para o formulário
-    nome_completo = forms.CharField(max_length=150, label="Nome Completo")
-    password = forms.CharField(widget=forms.PasswordInput())
+    
+    # Campo extra no form
+    cpf = forms.CharField(max_length=14, required=True)
 
     class Meta:
-        model = User
-        fields = ['username', 'email', 'password']
-
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        
-        # O segredo: Pegamos o 'nome_completo' e jogamos no 'first_name' do User
-        user.first_name = self.cleaned_data.get('nome_completo')
-        
-        # Define a senha (use o password vindo do POST se você adicionou o campo)
-        # Se não adicionou no form, pode usar uma padrão para teste:
-        password = self.cleaned_data.get('password')
-        if password:
-            user.set_password(password)
-
-        if commit:
-            user.save()
-        return user
-
+        model = Professor 
+        fields = [
+            'nome', 
+            'matricula', 
+            'data_nasc', 
+            'telefone',
+            'foto_perfil', 
+            'tipo_trabalho', 
+            'data_admissao', 
+            'inst_formacao'
+        ]

@@ -1,37 +1,30 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
 from habitusapp.forms import AlunoForm, ProfessorForm, ProfessorEditForm
-from django.contrib.auth import authenticate, login as auth_login
-from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.http import require_POST
-from habitusapp.models import Admin
 from django.contrib import messages
 from django.conf import settings
 import os
 from habitusapp.models import Noticia, Admin, Professor, Exercicio, Aluno
 from habitusapp.forms import NoticiaForm, ExercicioForm
 from django.db.models import Q
-
-from django.views.decorators.csrf import csrf_protect
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from habitusapp.forms import ProfessorCadastroForm
-
+from django.db import transaction
 
 @login_required
 def professores(request):
     busca = request.GET.get('busca', '')
-
     grupo_professor = Group.objects.get(name='Professor')
     
-    # Inicialmente não mostra nenhum professor, só mostra quando há busca
     if busca:
         usuarios_professores = grupo_professor.user_set.filter(
             Q(professor__nome__icontains=busca) | Q(professor__matricula__icontains=busca)
         ).order_by('professor__nome')
     else:
-        # Retorna queryset vazio quando não há busca
         usuarios_professores = grupo_professor.user_set.none()
 
     context = {
@@ -70,7 +63,6 @@ def atualizar_foto_professor(request, pk):
     professor = get_object_or_404(Professor, pk=pk)
     
     if 'foto' in request.FILES:
-        # Remove a foto antiga se existir
         if professor.foto_perfil:
             professor.foto_perfil.delete(save=False)
         
@@ -106,20 +98,12 @@ def editar_professor(request, pk):
         'form': form
     })
 
-
-
-
-
-
-
-
 @csrf_protect
 @login_required
 def exercicios(request):
     busca = request.GET.get('busca', '')
     grupo_muscular = request.GET.get('grupo_muscular', '')
     
-    # Verifica se há algum critério de pesquisa
     has_search_criteria = bool(busca.strip() or grupo_muscular)
     
     if has_search_criteria:
@@ -132,7 +116,6 @@ def exercicios(request):
         if grupo_muscular:
             exercicios = exercicios.filter(grupo_muscular=grupo_muscular)
     else:
-        # Se não há critério de pesquisa, retorna queryset vazio
         exercicios = Exercicio.objects.none()
 
     context = {
@@ -187,38 +170,28 @@ def editar_exercicio(request, exercicio_id):
         'exercicio': exercicio
     })
 
-from django.contrib import messages
-from django.shortcuts import get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.views.decorators.http import require_POST
-
 def is_admin(user):
     return user.groups.filter(name='Admin').exists()
 
 @login_required
 @require_POST
 def inativar_reativar_professor(request, pk):
-    # Verifica se o usuário é admin
     if not is_admin(request.user):
         messages.error(request, 'Você não tem permissão para realizar esta ação.')
         return redirect('feed')
     
     professor = get_object_or_404(Professor, pk=pk)
     
-    # Impede que um admin inative/reative a si mesmo
     if professor.user == request.user:
         messages.error(request, 'Você não pode modificar o status da sua própria conta.')
         return redirect('professores')
     
-    # Alterna o status do usuário
     user = professor.user
     if user.is_active:
-        # Se está ativo, inativa
         user.is_active = False
         user.save()
         messages.success(request, f'Conta do professor {professor.nome} inativada com sucesso!')
     else:
-        # Se está inativo, reativa
         user.is_active = True
         user.save()
         messages.success(request, f'Conta do professor {professor.nome} reativada com sucesso!')
@@ -228,27 +201,22 @@ def inativar_reativar_professor(request, pk):
 @login_required
 @require_POST
 def inativar_reativar_aluno(request, pk):
-    # Verifica se o usuário é admin
     if not is_admin(request.user):
         messages.error(request, 'Você não tem permissão para realizar esta ação.')
         return redirect('gerenciar_alunos')
     
     aluno = get_object_or_404(Aluno, pk=pk)
     
-    # Impede que um admin inative/reative a si mesmo (se for aluno também)
     if aluno.user == request.user:
         messages.error(request, 'Você não pode modificar o status da sua própria conta.')
         return redirect('ver_aluno', aluno_id=pk)
     
-    # Alterna o status do usuário
     user = aluno.user
     if user.is_active:
-        # Se está ativo, inativa
         user.is_active = False
         user.save()
         messages.success(request, f'Conta do aluno {aluno.nome} inativada com sucesso!')
     else:
-        # Se está inativo, reativa
         user.is_active = True
         user.save()
         messages.success(request, f'Conta do aluno {aluno.nome} reativada com sucesso!')
@@ -256,17 +224,54 @@ def inativar_reativar_aluno(request, pk):
     return redirect('ver_aluno', aluno_id=pk)
 
 
-
 def eh_admin_gestor(user):
-    return user.groups.filter(name='Admin_Gestor').exists()
+    return user.groups.filter(name='Admin_Gestor').exists() or user.is_superuser
 
 @user_passes_test(eh_admin_gestor)
 def cadastrar_professor(request):
     if request.method == 'POST':
-        form = ProfessorCadastroForm(request.POST)
+        form = ProfessorCadastroForm(request.POST, request.FILES)
+        
         if form.is_valid():
-            form.save()
-            return redirect('gerenciar_professores') # Redireciona para a lista
+            try:
+                with transaction.atomic():
+                    # Usamos .get() aqui como proteção extra caso o email venha vazio no form
+                    email_digitado = form.cleaned_data.get('email', '')
+                    primeiro_nome = form.cleaned_data.get('nome', '').split()[0] if form.cleaned_data.get('nome') else ''
+                    
+                    # 1. Cria a conta de acesso no Django (User)
+                    novo_user = User.objects.create_user(
+                        username=form.cleaned_data.get('username'),
+                        email=email_digitado,
+                        password=form.cleaned_data.get('password'),
+                        first_name=primeiro_nome
+                    )
+                    
+                    # 2. Adiciona o novo usuário ao grupo "Professor"
+                    grupo_prof, created = Group.objects.get_or_create(name='Professor')
+                    novo_user.groups.add(grupo_prof)
+                    
+                    # 3. Salva a ficha do Professor
+                    professor = form.save(commit=False)
+                    professor.user = novo_user 
+                    professor.cpf = form.cleaned_data.get('cpf')
+                    
+                    # ATENÇÃO: Se o modelo 'Professor' no seu arquivo models.py 
+                    # também tiver um campo 'email' além do usuário, descomente a linha abaixo:
+                    # professor.email = email_digitado
+                    
+                    professor.save()
+                
+                # Gera a mensagem de sucesso e redireciona para a página de feed
+                messages.success(request, f'Professor(a) {professor.nome} cadastrado com sucesso!')
+                return redirect('feed')
+                
+            except Exception as e:
+                # Se algo quebrar no banco de dados, o erro vai aparecer em vermelho na tela
+                messages.error(request, f'Erro interno ao salvar no banco: {str(e)}')
+        else:
+            messages.error(request, 'Verifique os erros no formulário e tente novamente.')
     else:
         form = ProfessorCadastroForm()
+        
     return render(request, 'PagsAdminGestor/cadastrar_professor.html', {'form': form})
