@@ -16,6 +16,6 @@ RUN chown -R root:root /usr/src/python/app/devadmin/data
 
 EXPOSE 8000
 
-# O ENTRYPOINT roda sempre, o CMD vira o argumento do entrypoint
-ENTRYPOINT ["/usr/src/python/app/entrypoint.sh"]
+# Usa exec com wrapper para passar CMD como argumentos ($@)
+ENTRYPOINT ["/bin/bash", "-c", "exec /usr/src/python/app/entrypoint.sh \"$@\"", "--"]
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

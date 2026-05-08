@@ -160,11 +160,10 @@ ASGI_APPLICATION = 'devadmin.asgi.application'
 
 # Banco de dados
 DATABASES = {
-    'default': dj_database_url.config(
-        default=f'sqlite:///{BASE_DIR}/data/db.sqlite3',
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': '/usr/src/python/app/devadmin/data/db.sqlite3',
+    }
 }
 
 # ==================== SENHAS ====================

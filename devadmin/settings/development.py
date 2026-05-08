@@ -1,5 +1,6 @@
 from .settings import*
 import os
+from pathlib import Path
 DEBUG = True
 #Crie secret key para seu ambiente de desenvolvimento
 SECRET_KEY='ixb62ha#ts=ab4t2u%p1_62-!5w2j==j6d^3-j$!z(@*m+-h'
@@ -24,17 +25,17 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
 ]
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': '/usr/src/python/app/devadmin/data/db.sqlite3',
+    }
+}
 
-DATABASES={
-'default':{
-'ENGINE':'django.db.backends.sqlite3',
-'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-}
-}
-
-DATABASES={
-'default':{
-'ENGINE':'django.db.backends.sqlite3',
-'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-}
-}
+# DATABASES={
+# 'default':{
+# 'ENGINE':'django.db.backends.sqlite3',
+# 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+# }
+# }
