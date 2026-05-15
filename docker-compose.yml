@@ -6,6 +6,8 @@ services:
     volumes:
       # - sqlite_data:/usr/src/python/app/devadmin/data
       - ./devadmin/data:/usr/src/python/app/devadmin/data
+      # - Volume para persistência de imagens 
+      - ./devadmin/media:/usr/src/python/app/devadmin/media
     environment:
       - PYTHONUNBUFFERED=1
       - DATABASE_URL=sqlite:////usr/src/python/app/devadmin/data/db.sqlite3
