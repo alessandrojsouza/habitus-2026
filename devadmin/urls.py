@@ -28,9 +28,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('logout/', viewsUsuario.logout_view, name='logout'),
 
-    
-
-    #Páginas Usuário
+    # Páginas Usuário
     path('', login, name='login'),
     path('criar_conta/', criar_conta, name='criar_conta'),
     path('feed/', viewsUsuario.feed, name='feed'),
@@ -69,10 +67,7 @@ urlpatterns = [
     path('adicionar_meu_progresso/', viewsUsuario.adicionar_meu_progresso, name='adicionar_meu_progresso'),
     path('editar_meu_progresso/<int:progresso_id>/', viewsUsuario.editar_meu_progresso, name='editar_meu_progresso'),
 
-
-
-
-    #Páginas Professor
+    # Páginas Professor
     path('gerenciar_noticias/', viewsProfessor.gerenciar_noticias, name='gerenciar_noticias'),
     path('editar_noticia/<int:noticia_id>/', viewsProfessor.editar_noticia, name='editar_noticia'),
     path('excluir-noticia/<int:noticia_id>/', viewsProfessor.excluir_noticia, name='excluir_noticia'),
@@ -86,13 +81,12 @@ urlpatterns = [
     path('gerenciar_alunos/<int:aluno_id>/adicionar_treino/', viewsProfessor.adicionar_treino, name='adicionar_treino'),
     path('gerenciar_alunos/<int:aluno_id>/treino/<int:treino_id>/editar/', viewsProfessor.editar_treino_professor, name='editar_treino_professor'),
     path('gerenciar_alunos/<int:aluno_id>/treino/<int:treino_id>/excluir/', viewsProfessor.excluir_treino_professor, name='excluir_treino_professor'),
-    #path('gerenciar_alunos/arquivar_treino/<int:aluno_id>/<int:treino_id>/', viewsProfessor.arquivar_treino, name='arquivar_treino'),
     path('progresso_aluno/<int:aluno_id>/', viewsProfessor.progresso_aluno, name='progresso_aluno'),
     path('adicionar_progresso/<int:aluno_id>/', viewsProfessor.adicionar_progresso, name='adicionar_progresso'),
     path('editar_progresso/<int:aluno_id>/<int:progresso_id>/', viewsProfessor.editar_progresso, name='editar_progresso'),
     path('arquivar_treino/<int:aluno_id>/<int:treino_id>/', viewsProfessor.arquivar_treino, name='arquivar_treino'),
 
-    #Páginas Admin
+    # Páginas Admin
     path('professores/', viewsAdmin.professores, name='professores'),
     path('novo_professor/', viewsAdmin.novo_professor, name='novo_professor'),
     path('professor/<int:pk>/', viewsAdmin.professor, name='professor'),
@@ -105,8 +99,8 @@ urlpatterns = [
     path('professor/<int:pk>/inativar-reativar/', viewsAdmin.inativar_reativar_professor, name='inativar_reativar_professor'),
     path('aluno/<int:pk>/inativar-reativar/', viewsAdmin.inativar_reativar_aluno, name='inativar_reativar_aluno'),
     path('cadastrar-professor/', viewsAdmin.cadastrar_professor, name='cadastrar_professor'),
-    
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
 
+# Configuração de arquivos de mídia (Apenas em DEBUG)
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
