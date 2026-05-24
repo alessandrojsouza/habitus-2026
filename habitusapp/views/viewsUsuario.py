@@ -317,10 +317,19 @@ def editar_foto(request):
 
         # Upload de nova foto
         elif 'nova_foto' in request.FILES:
-            if perfil.foto_perfil and os.path.isfile(perfil.foto_perfil.path):
-                os.remove(perfil.foto_perfil.path)  # Apaga foto antiga
+            # 1. Se existir uma foto antiga, tenta apagá-la fisicamente do disco
+            if perfil.foto_perfil:
+                try:
+                    if os.path.isfile(perfil.foto_perfil.path):
+                        os.remove(perfil.foto_perfil.path)
+                except (ValueError, FileNotFoundError):
+                    pass # Ignora o erro se o arquivo já tiver sumido da pasta media
+            
+            # 2. CORREÇÃO AQUI: Estas linhas ficam FORA do "if perfil.foto_perfil:"
+            # Desta forma, são executadas para QUALQUER upload.
             perfil.foto_perfil = request.FILES['nova_foto']
             perfil.save()
+            
             Notificacao.objects.create(usuario=request.user, conteudo="Você alterou sua foto de perfil")
             return redirect('perfil')
 

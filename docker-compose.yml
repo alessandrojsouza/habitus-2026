@@ -4,7 +4,6 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      # volumes nomeados guardando banco e pasta media
       - sqlite_data:/usr/src/python/app/devadmin/data
       - media_data:/usr/src/python/app/devadmin/media
     environment:

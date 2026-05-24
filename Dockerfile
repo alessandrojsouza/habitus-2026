@@ -15,7 +15,6 @@ COPY . .
 RUN chmod +x /usr/src/python/app/entrypoint.sh
 RUN chown -R root:root /usr/src/python/app/devadmin/data
 RUN chown -R root:root /usr/src/python/app/devadmin/media
-RUN chmod -R 777 /usr/src/python/app/devadmin/media
 
 EXPOSE 8000
 
