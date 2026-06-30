@@ -1,9 +1,10 @@
-from .settings import*
+from .settings import *
 import os
 from pathlib import Path
+
 DEBUG = True
-#Crie secret key para seu ambiente de desenvolvimento
-SECRET_KEY='ixb62ha#ts=ab4t2u%p1_62-!5w2j==j6d^3-j$!z(@*m+-h'
+# Crie secret key para seu ambiente de desenvolvimento
+SECRET_KEY = 'ixb62ha#ts=ab4t2u%p1_62-!5w2j==j6d^3-j$!z(@*m+-h'
 ALLOWED_HOSTS = ['*']  # Aceitar todos os hosts em desenvolvimento
 
 # Configurações de segurança para desenvolvimento
@@ -25,17 +26,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
 ]
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+# Use o BASE_DIR definido em settings.py (aponta para o pacote devadmin)
+# e mantenha o banco SQLite dentro de `devadmin/data/db.sqlite3`.
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '/usr/src/python/app/devadmin/data/db.sqlite3',
+        'NAME': str(Path(__file__).resolve().parent.parent / 'data' / 'db.sqlite3'),
     }
 }
-
-# DATABASES={
-# 'default':{
-# 'ENGINE':'django.db.backends.sqlite3',
-# 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-# }
-# }

@@ -402,3 +402,13 @@ class ProfessorCadastroForm(forms.ModelForm):
             'data_admissao', 
             'inst_formacao'
         ]
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if not email:
+            raise ValidationError('E-mail é obrigatório.')
+        if User.objects.filter(email=email).exists():
+            raise ValidationError('Este e-mail já está em uso.')
+        if Professor.objects.filter(email=email).exists():
+            raise ValidationError('Este e-mail já está cadastrado para outro professor.')
+        return email

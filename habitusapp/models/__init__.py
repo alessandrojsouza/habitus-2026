@@ -8,3 +8,4 @@ from .TreinoExercicio import TreinoExercicio
 from .Notificacao import Notificacao
 from .Progresso import Progresso
 from .SolicitacaoDeTreino import SolicitacaoDeTreino
+from .ConfirmacaoSenha import ConfirmacaoSenha

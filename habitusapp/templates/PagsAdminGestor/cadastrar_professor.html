@@ -75,10 +75,22 @@
                     Remover Foto
                 </button>
 
-                <h1>DADOS PROFISSIONAIS</h1>
+                <h1>DADOS PESSOAIS e PROFISSIONAIS</h1>
 
                 <label for="id_nome">Nome Completo:</label>
                 <input type="text" name="nome" id="id_nome" required placeholder="Nome do docente">
+
+                <div class="cpf-telefone" style="display: flex; gap: 20px;">
+                    <div style="flex: 1;">
+                        <label for="id_cpf">CPF:</label>
+                        <input type="text" name="cpf" id="id_cpf" required placeholder="000.000.000-00" maxlength="14">
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="id_telefone">Telefone:</label>
+                        <input type="text" name="telefone" id="id_telefone" placeholder="(84) 98888-8888" maxlength="15">
+                    </div>
+                </div>
+
 
                 <div class="usuario-data" style="display: flex; gap: 20px;"> 
                     <div style="flex: 1;">
@@ -103,20 +115,13 @@
 
                 <hr style="border: 0.5px solid #444; margin: 25px 0;">
                 
-                <h1>DADOS PESSOAIS</h1>
+                <h1>DADOS DE ACESSO</h1>
 
-                <div class="usuario-data" style="display: flex; gap: 20px;">
-                    <div style="flex: 1;">
-                        <label for="id_username">Usuário (Login):</label>
-                        <input type="text" name="username" id="id_username" required placeholder="username.docente">
-                    </div>
-                    <div style="flex: 1;">
-                        <label for="id_data_nasc">Data de Nascimento:</label>
-                        <input type="date" name="data_nasc" id="id_data_nasc" required>
-                    </div>
-                </div>
+                <label for="id_username" style="display: block; margin-bottom: 8px;">Nome de usuário:</label>
+                <input type="text" name="username" id="id_username" required placeholder="Nome de Usuário"
+                       style="width: 100%; padding: 2px; border-radius: 8px; margin-bottom: 4px; background: #3B3E52; color: white; border: none;">
 
-                <div class="cpf-telefone" style="display: flex; gap: 20px;">
+              <!-- <div   class="cpf-telefone" style="display: flex; gap: 20px;">
                     <div style="flex: 1;">
                         <label for="id_cpf">CPF:</label>
                         <input type="text" name="cpf" id="id_cpf" required placeholder="000.000.000-00" maxlength="14">
@@ -125,20 +130,21 @@
                         <label for="id_telefone">Telefone:</label>
                         <input type="text" name="telefone" id="id_telefone" placeholder="(84) 98888-8888" maxlength="15">
                     </div>
-                </div>
+                </div> -->
 
-                <label for="id_email">E-mail Institucional:</label>
-                <input type="email" name="email" id="id_email" required placeholder="professor@escola.com">
+                <label for="id_email">E-mail:</label>
+                <input type="email" name="email" id="id_email" required placeholder="exemplo@email.com">
 
-                <label for="id_password">Definir Senha de Acesso:</label>
+                <label for="id_password">Senha Padrão (não editável):</label>
                 <div style="position: relative; width: 100%; margin-bottom: 20px;">
-                    <input type="password" name="password" id="senha" required placeholder="Mínimo 8 dígitos">
+                    <input type="password" id="senha_display" value="12345678" readonly placeholder="Mínimo 8 dígitos" style="width:100%; padding:0 40px 0 5px; height:40px; border:none; border-radius:5px; background:#3B3E52; color:white; font-size:10px; box-sizing:border-box;">
                     <img src="{% static 'icones-site/olho-fechado.png' %}" 
                          id="iconeSenha" 
                          data-aberto="{% static 'icones-site/olho-aberto.png' %}" 
                          data-fechado="{% static 'icones-site/olho-fechado.png' %}" 
                          onclick="toggleSenha()" 
-                         style="width: 22px; position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer;">
+                         style="width:22px; position: absolute; right:15px; top:50%; transform:translateY(-50%); cursor:pointer;">
+                    <input type="hidden" name="password" value="12345678">
                 </div>
 
                 <div class="botoes" style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
@@ -153,7 +159,7 @@
 
     <script>
         function toggleSenha() {
-            const senha = document.getElementById("senha");
+            const senha = document.getElementById("senha_display");
             const icone = document.getElementById("iconeSenha");
             const caminhoAberto = icone.getAttribute("data-aberto");
             const caminhoFechado = icone.getAttribute("data-fechado");

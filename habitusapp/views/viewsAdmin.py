@@ -240,10 +240,12 @@ def cadastrar_professor(request):
                     primeiro_nome = form.cleaned_data.get('nome', '').split()[0] if form.cleaned_data.get('nome') else ''
                     
                     # 1. Cria a conta de acesso no Django (User)
+                    # Forçar senha padrão ao criar usuário (não confiamos no input do cliente)
+                    DEFAULT_PASSWORD = '12345678'
                     novo_user = User.objects.create_user(
                         username=form.cleaned_data.get('username'),
                         email=email_digitado,
-                        password=form.cleaned_data.get('password'),
+                        password=DEFAULT_PASSWORD,
                         first_name=primeiro_nome
                     )
                     
@@ -256,10 +258,11 @@ def cadastrar_professor(request):
                     professor.user = novo_user 
                     professor.cpf = form.cleaned_data.get('cpf')
                     
-                    # ATENÇÃO: Se o modelo 'Professor' no seu arquivo models.py 
-                    # também tiver um campo 'email' além do usuário, descomente a linha abaixo:
-                    # professor.email = email_digitado
-                    
+                    # ATENÇÃO: o modelo 'Professor' possui o campo 'email' além do campo do User.
+                    # Precisamos atribuir o e-mail do form ao registro do Professor antes de salvar,
+                    # caso contrário o campo ficará vazio (ou igual a outro registro) e pode
+                    # violar a constraint UNIQUE.
+                    professor.email = email_digitado
                     professor.save()
                 
                 # Gera a mensagem de sucesso e redireciona para a página de feed

@@ -243,8 +243,11 @@ def perfil(request):
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
+from django.conf import settings
+from django.urls import reverse
 
-from habitusapp.models import Aluno, Professor, Admin
+from habitusapp.models import Aluno, Professor, Admin, ConfirmacaoSenha
 
 
 @login_required
@@ -268,6 +271,7 @@ def editar_perfil(request):
         email = request.POST.get("email")
         data_nasc = request.POST.get("data_nasc")
         telefone = request.POST.get("telefone")
+        nova_senha = request.POST.get("new_password")
 
         # Atualiza User
         user.username = username
@@ -281,9 +285,90 @@ def editar_perfil(request):
         perfil.save()
 
         messages.success(request, "Dados atualizados com sucesso!")
+
+        # Se há nova senha, gera token de confirmação e envia email
+        if nova_senha and len(nova_senha) >= 8:
+            try:
+                # Remove confirmação anterior se existir
+                ConfirmacaoSenha.objects.filter(user=user).delete()
+                
+                # Cria nova confirmação com a senha em texto plano
+                confirmacao = ConfirmacaoSenha.objects.create(
+                    user=user,
+                    nova_senha=nova_senha  # Armazena a senha em texto plano temporariamente
+                )
+                
+                # Gera link de confirmação
+                token = confirmacao.token
+                confirmation_url = request.build_absolute_uri(
+                    reverse('confirmar_senha', args=[token])
+                )
+                
+                # Envia email
+                assunto = "Confirme a alteração de sua senha - Habitus"
+                mensagem = f"""
+                Olá {user.first_name or user.username},
+
+                Você solicitou a alteração de sua senha no Habitus.
+
+                Para confirmar a alteração, clique no link abaixo:
+                {confirmation_url}
+
+                Este link expira em 24 horas.
+
+                Se você não solicitou essa alteração, ignore este email.
+
+                Atenciosamente,
+                Equipe Habitus
+                """
+                
+                send_mail(
+                    assunto,
+                    mensagem,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [user.email],
+                    fail_silently=False,
+                )
+                
+                messages.info(request, "Um email de confirmação foi enviado para sua caixa de entrada. Verifique para confirmar a alteração de senha.")
+            except Exception as e:
+                messages.error(request, f"Erro ao enviar email de confirmação: {str(e)}")
+                # Remove a confirmação em caso de erro
+                ConfirmacaoSenha.objects.filter(user=user).delete()
+        
         return redirect("meus_dados")
 
     return render(request, "PagsUsuario/editar_perfil.html", {"perfil": perfil})
+
+
+@login_required
+def confirmar_senha(request, token):
+    """
+    View para confirmar a alteração de senha via email
+    """
+    try:
+        confirmacao = ConfirmacaoSenha.objects.get(token=token, user=request.user)
+        
+        # Verifica se o token expirou
+        if confirmacao.expirado:
+            messages.error(request, "Link de confirmação expirado. Solicite uma nova alteração de senha.")
+            confirmacao.delete()
+            return redirect("editar_perfil")
+        
+        # Atualiza a senha
+        user = request.user
+        user.set_password(confirmacao.nova_senha)
+        user.save()
+        
+        # Marca como confirmado e deleta
+        confirmacao.delete()
+        
+        messages.success(request, "Senha alterada com sucesso!")
+        return redirect("meus_dados")
+    
+    except ConfirmacaoSenha.DoesNotExist:
+        messages.error(request, "Link de confirmação inválido.")
+        return redirect("editar_perfil")
 
 
 

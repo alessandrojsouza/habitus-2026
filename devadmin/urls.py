@@ -36,6 +36,7 @@ urlpatterns = [
     path('treinos/<int:treino_id>/', viewsUsuario.detalhes_treino, name='detalhes_treino'),
     path('perfil/', viewsUsuario.perfil, name='perfil'),
     path("editar-perfil/", viewsUsuario.editar_perfil, name="editar_perfil"),
+    path('confirmar-senha/<str:token>/', viewsUsuario.confirmar_senha, name='confirmar_senha'),
     path('perfil/editar-foto', viewsUsuario.editar_foto, name='editar_foto'),
     path('meus_dados/', viewsUsuario.meus_dados, name='meus_dados'),
     path('novo_treino/', viewsUsuario.novo_treino, name='novo_treino'),
