@@ -250,6 +250,14 @@ from django.urls import reverse
 from habitusapp.models import Aluno, Professor, Admin, ConfirmacaoSenha
 
 
+def obter_url_confirmacao(request, token):
+    path = reverse('confirmar_senha', args=[token])
+    site_url = getattr(settings, 'SITE_URL', '').strip()
+    if site_url:
+        return f"{site_url.rstrip('/')}{path}"
+    return request.build_absolute_uri(path)
+
+
 @login_required
 def editar_perfil(request):
     user = request.user
@@ -272,22 +280,49 @@ def editar_perfil(request):
         data_nasc = request.POST.get("data_nasc")
         telefone = request.POST.get("telefone")
         nova_senha = request.POST.get("new_password")
+        confirmar_senha_input = request.POST.get("confirm_password")
 
-        # Atualiza User
-        user.username = username
-        user.email = email
+        # Validação de username único se for alterado
+        if username and username != user.username:
+            if User.objects.filter(username=username).exclude(pk=user.pk).exists():
+                messages.error(request, "Este nome de usuário já está em uso.")
+                return render(request, "PagsUsuario/editar_perfil.html", {"perfil": perfil})
+
+        # Validação de email único se for alterado
+        if email and email != user.email:
+            if User.objects.filter(email=email).exclude(pk=user.pk).exists():
+                messages.error(request, "Este email já está cadastrado em outra conta.")
+                return render(request, "PagsUsuario/editar_perfil.html", {"perfil": perfil})
+
+        # Validação de senha se informada
+        tem_nova_senha = False
+        if nova_senha or confirmar_senha_input:
+            if nova_senha != confirmar_senha_input:
+                messages.error(request, "As senhas digitadas não coincidem.")
+                return render(request, "PagsUsuario/editar_perfil.html", {"perfil": perfil})
+            if len(nova_senha) < 6:
+                messages.error(request, "A nova senha deve ter no mínimo 6 caracteres.")
+                return render(request, "PagsUsuario/editar_perfil.html", {"perfil": perfil})
+            tem_nova_senha = True
+
+        # Atualiza dados do User
+        if username:
+            user.username = username
+        if email:
+            user.email = email
         user.save()
 
         # Atualiza perfil
-        perfil.nome = nome
-        perfil.data_nasc = data_nasc
-        perfil.telefone = telefone
+        if nome:
+            perfil.nome = nome
+        if data_nasc:
+            perfil.data_nasc = data_nasc
+        if telefone is not None:
+            perfil.telefone = telefone
         perfil.save()
 
-        messages.success(request, "Dados atualizados com sucesso!")
-
         # Se há nova senha, gera token de confirmação e envia email
-        if nova_senha and len(nova_senha) >= 8:
+        if tem_nova_senha:
             try:
                 # Remove confirmação anterior se existir
                 ConfirmacaoSenha.objects.filter(user=user).delete()
@@ -295,32 +330,29 @@ def editar_perfil(request):
                 # Cria nova confirmação com a senha em texto plano
                 confirmacao = ConfirmacaoSenha.objects.create(
                     user=user,
-                    nova_senha=nova_senha  # Armazena a senha em texto plano temporariamente
+                    nova_senha=nova_senha
                 )
                 
                 # Gera link de confirmação
                 token = confirmacao.token
-                confirmation_url = request.build_absolute_uri(
-                    reverse('confirmar_senha', args=[token])
-                )
+                confirmation_url = obter_url_confirmacao(request, token)
                 
-                # Envia email
+                # Envia email de confirmação
                 assunto = "Confirme a alteração de sua senha - Habitus"
-                mensagem = f"""
-                Olá {user.first_name or user.username},
+                mensagem = f"""Olá {perfil.nome or user.username},
 
-                Você solicitou a alteração de sua senha no Habitus.
+Você solicitou a alteração da sua senha no sistema Habitus.
 
-                Para confirmar a alteração, clique no link abaixo:
-                {confirmation_url}
+Para aprovar e confirmar a alteração da sua senha, por favor clique no link abaixo:
+{confirmation_url}
 
-                Este link expira em 24 horas.
+Este link expira em 24 horas.
 
-                Se você não solicitou essa alteração, ignore este email.
+Se você não solicitou essa alteração, ignore este email e sua senha permanecerá inalterada.
 
-                Atenciosamente,
-                Equipe Habitus
-                """
+Atenciosamente,
+Equipe Habitus
+"""
                 
                 send_mail(
                     assunto,
@@ -330,45 +362,59 @@ def editar_perfil(request):
                     fail_silently=False,
                 )
                 
-                messages.info(request, "Um email de confirmação foi enviado para sua caixa de entrada. Verifique para confirmar a alteração de senha.")
+                messages.info(request, f"Dados atualizados! Um email de confirmação foi enviado para {user.email}. Clique no link do email para aprovar sua nova senha.")
             except Exception as e:
-                messages.error(request, f"Erro ao enviar email de confirmação: {str(e)}")
-                # Remove a confirmação em caso de erro
+                messages.error(request, f"Dados atualizados, porém falhou o envio do email de confirmação: {str(e)}")
                 ConfirmacaoSenha.objects.filter(user=user).delete()
-        
+        else:
+            messages.success(request, "Dados atualizados com sucesso!")
+
         return redirect("meus_dados")
 
     return render(request, "PagsUsuario/editar_perfil.html", {"perfil": perfil})
 
 
-@login_required
 def confirmar_senha(request, token):
     """
-    View para confirmar a alteração de senha via email
+    View para confirmar a alteração de senha via link enviado no email
     """
     try:
-        confirmacao = ConfirmacaoSenha.objects.get(token=token, user=request.user)
+        confirmacao = ConfirmacaoSenha.objects.get(token=token)
         
         # Verifica se o token expirou
         if confirmacao.expirado:
-            messages.error(request, "Link de confirmação expirado. Solicite uma nova alteração de senha.")
+            messages.error(request, "O link de confirmação expirou. Solicite uma nova alteração de senha.")
             confirmacao.delete()
-            return redirect("editar_perfil")
+            if request.user.is_authenticated:
+                return redirect("editar_perfil")
+            return redirect("login")
         
-        # Atualiza a senha
-        user = request.user
+        # Guarda se o usuário da alteração é o usuário atualmente logado na sessão
+        is_same_user_logged_in = request.user.is_authenticated and request.user.pk == confirmacao.user.pk
+
+        # Atualiza a senha no User
+        user = confirmacao.user
         user.set_password(confirmacao.nova_senha)
         user.save()
         
-        # Marca como confirmado e deleta
+        # Se o usuário autor da mudança estava logado na mesma sessão, atualiza o hash para manter a sessão ativa
+        if is_same_user_logged_in:
+            from django.contrib.auth import update_session_auth_hash
+            update_session_auth_hash(request, user)
+        
+        # Deleta a confirmação utilizada
         confirmacao.delete()
         
-        messages.success(request, "Senha alterada com sucesso!")
-        return redirect("meus_dados")
+        messages.success(request, "Sua senha foi alterada e aprovada com sucesso!")
+        if is_same_user_logged_in or request.user.is_authenticated:
+            return redirect("meus_dados")
+        return redirect("login")
     
     except ConfirmacaoSenha.DoesNotExist:
-        messages.error(request, "Link de confirmação inválido.")
-        return redirect("editar_perfil")
+        messages.error(request, "Link de confirmação inválido ou a alteração já foi aprovada.")
+        if request.user.is_authenticated:
+            return redirect("meus_dados")
+        return redirect("login")
 
 
 
@@ -1061,9 +1107,51 @@ def historico(request):
 def reportar_erro(request):
     return render(request, 'PagsUsuario/reportar_erro.html')
 
-#@csrf_exempt
-#@csrf_protect
 def recuperar_senha(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        if email:
+            users = User.objects.filter(email=email)
+            if users.exists():
+                for u in users:
+                    import secrets
+                    nova_senha_temp = secrets.token_hex(4)
+                    ConfirmacaoSenha.objects.filter(user=u).delete()
+                    confirmacao = ConfirmacaoSenha.objects.create(
+                        user=u,
+                        nova_senha=nova_senha_temp
+                    )
+                    confirmation_url = obter_url_confirmacao(request, confirmacao.token)
+                    assunto = "Recuperação de Senha - Habitus"
+                    mensagem = f"""Olá {u.first_name or u.username},
+
+Recebemos uma solicitação de recuperação de senha para sua conta no Habitus.
+
+Sua senha foi temporariamente definida para: {nova_senha_temp}
+
+Para confirmar e ativar essa alteração de senha, por favor clique no link abaixo:
+{confirmation_url}
+
+Este link expira em 24 horas.
+
+Se você não solicitou essa alteração, nenhuma ação é necessária e o link expirará.
+
+Atenciosamente,
+Equipe Habitus
+"""
+                    try:
+                        send_mail(
+                            assunto,
+                            mensagem,
+                            settings.DEFAULT_FROM_EMAIL,
+                            [u.email],
+                            fail_silently=False,
+                        )
+                    except Exception as e:
+                        pass
+            messages.success(request, "Se o email informado estiver cadastrado, um link de confirmação para alteração de senha foi enviado.")
+            return redirect("login")
+
     return render(request, 'PagsUsuario/recuperar_senha.html')
 #@csrf_exempt
 #@csrf_protect

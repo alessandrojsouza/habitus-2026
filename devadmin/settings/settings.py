@@ -57,6 +57,10 @@ if env_hosts:
 if 'RENDER_EXTERNAL_HOSTNAME' in os.environ:
     ALLOWED_HOSTS.append(os.environ['RENDER_EXTERNAL_HOSTNAME'])
 
+# Suporte a AWS Load Balancers (ALB / EC2 / ECS / CloudFront / Nginx) - OPÇÃO B (Captura Dinâmica do Domínio)
+USE_X_FORWARDED_HOST = config('USE_X_FORWARDED_HOST', default=True, cast=bool)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 # ==================== CSRF CONFIGURATION ====================
 
 # CSRF Trusted Origins
@@ -69,10 +73,16 @@ CSRF_TRUSTED_ORIGINS = [
     'https://habitus-cnat.vercel.app'
 ]
 
-# Adiciona host do Render
+# Adiciona host do Render se existir
 if 'RENDER_EXTERNAL_HOSTNAME' in os.environ:
     render_host = os.environ['RENDER_EXTERNAL_HOSTNAME']
     CSRF_TRUSTED_ORIGINS.append(f'https://{render_host}')
+
+# Adiciona dinamicamente domínios do ALLOWED_HOSTS ao CSRF_TRUSTED_ORIGINS
+for h in ALLOWED_HOSTS:
+    if h and h not in ['localhost', '127.0.0.1', '*'] and not h.startswith('.'):
+        CSRF_TRUSTED_ORIGINS.append(f'https://{h}')
+        CSRF_TRUSTED_ORIGINS.append(f'http://{h}')
 
 # ==================== MIDDLEWARE - CORREÇÃO DO CSRF ====================
 
@@ -201,13 +211,16 @@ FILE_UPLOAD_HANDLERS = [
 # ==================== EMAIL CONFIGURATION ====================
 
 # Configuração de Email
-EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
+EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
 EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
 EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
-EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='habitusapp2026@gmail.com')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='habitusapp2026@gmail.com')
+
+# URL base do site para links em emails (ex: para Codespaces, rede local ou produção)
+SITE_URL = config('SITE_URL', default='')
 
 # ==================== AUTENTICAÇÃO ====================
 

@@ -8,19 +8,36 @@
     <link rel="icon" href="{% static 'icones-site/logo-h-pequena.png' %}">
     <link rel="stylesheet" href="{% static 'css/usuario/recuperar_senha.css' %}">
     <link rel="stylesheet" href="{% static 'css/usuario/aviso.css' %}">
-    <script src="{% static 'js/usuario/login.js' %}"></script>
     <script src="{% static 'js/usuario/aviso.js' %}"></script>
 </head>
 <body>
     <main class="login-container">
         <div class="login-header">
-            <img src="{% static 'icones-site/logo-nome-completo.png' %}" alt="Logo Habitus completo">
+            <a href="{% url 'login' %}">
+                <img src="{% static 'icones-site/logo-nome-completo.png' %}" alt="Logo Habitus completo">
+            </a>
         </div>
 
         <section class="container">
-            <img class="chave" src="{% static 'icones-site/construcao.png' %}" alt="Logo feed">
-            <h1>Essa página ainda está em construção, tente mais tarde!</h1>
-            <a class="botao_voltar" href="javascript:history.back()">Voltar</a> 
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <h1>Recuperação de Senha</h1>
+            <p>Informe o seu email cadastrado para receber as instruções de alteração de senha.</p>
+            
+            <form method="POST" action="{% url 'recuperar_senha' %}">
+                {% csrf_token %}
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required placeholder="Digite seu email cadastrado">
+
+                <button type="submit" class="btn-principal" style="margin-top: 15px;">Enviar email</button>
+                <a class="btn-secundario" href="{% url 'login' %}">Voltar</a>
+            </form>
         </section>
     
     </main>
