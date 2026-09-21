@@ -42,12 +42,12 @@
 
             <form method="POST">
                 {% csrf_token %}
-                <label for="email">E-mail:</label>
-                <input type="email" id="email" name="email" placeholder="Digite seu e-mail de acesso">
+                <label for="email">E-mail ou Matrícula:</label>
+                <input type="text" id="email" name="email" placeholder="Digite seu e-mail ou matrícula SUAP" required>
 
                 <label for="senha">Senha:</label>
                 <div style="position: relative;">
-                    <input type="password" id="senha" name="senha" placeholder="Digite sua senha">
+                    <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
                     <img 
                         src="{% static 'icones-site/olho-fechado.png' %}" 
                         id="iconeSenha" 
@@ -60,16 +60,16 @@
 
                 <a href="{% url 'recuperar_senha' %}" class="recuperar-senha">Recuperar senha</a>
 
-                <button type="submit" class="btn-principal">Entrar</button>
+                <button type="submit" name="tipo_login" value="convencional" class="btn-principal">Entrar</button>
                 <a href="{% url 'criar_conta' %}" class="btn-secundario">Criar Conta</a>
 
                 <div class="ou-linha">
                     <span>Ou</span>
                 </div>
 
-                <a href="{% url 'entrar_pelo_suap' %}" class="btn-suap">
+                <button type="submit" name="tipo_login" value="suap" class="btn-suap">
                     Entrar com o <img src="{% static 'icones-site/suap-logo.png' %}" alt="Logo SUAP">
-                </a>
+                </button>
             </form>
         </div>
     </main>

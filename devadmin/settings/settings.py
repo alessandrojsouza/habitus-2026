@@ -9,6 +9,21 @@ from decouple import config
 from pathlib import Path
 import dj_database_url
 
+# ==================== COMPATIBILIDADE PYTHON 3.14 ====================
+try:
+    import copy
+    from django.template.context import BaseContext
+    _test_ctx = BaseContext()
+    copy.copy(_test_ctx)
+except AttributeError:
+    def _base_context_copy(self):
+        duplicate = self.__class__.__new__(self.__class__)
+        duplicate.__dict__.update(self.__dict__)
+        duplicate.dicts = self.dicts[:]
+        return duplicate
+
+    BaseContext.__copy__ = _base_context_copy
+
 # ==================== CONFIGURAÇÕES BÁSICAS ====================
 
 # Diretório base do projeto

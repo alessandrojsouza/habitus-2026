@@ -141,11 +141,12 @@ a.btn-secundario{
     font-weight: 600;
     line-height: normal;
     font-size: 25px;
+    border: none;
+    cursor: pointer;
 }
 .btn-suap:hover{
     background-color: #50ffc5;
-    transition: 2s;
-
+    transition: 0.3s;
 }
 .btn-suap img{
     width: 3em;

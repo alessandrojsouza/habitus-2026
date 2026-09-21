@@ -27,6 +27,7 @@ from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime, timedelta
+from habitusapp.suap import autenticar_no_suap, sincronizar_ou_criar_aluno_suap
 
 
 @csrf_protect
@@ -41,14 +42,44 @@ def logout_view(request):
 @csrf_protect
 def login(request):
     if request.method == 'POST':
-        email = request.POST.get('email')
-        senha = request.POST.get('senha')
+        tipo_login = request.POST.get('tipo_login', 'convencional')
+        identificador = (request.POST.get('email') or '').strip()
+        senha = request.POST.get('senha', '')
 
-        # Verifica se existe usuário com o e-mail informado
-        try:
-            user_obj = User.objects.get(email=email)
-        except User.DoesNotExist:
-            messages.error(request, 'Usuário com este e-mail não existe!')
+        if not identificador or not senha:
+            messages.error(request, 'Por favor, preencha todos os campos.')
+            return render(request, 'PagsUsuario/login.html')
+
+        # === 1. Login com autenticação do SUAP ===
+        if tipo_login == 'suap':
+            sucesso, dados_suap, tokens, erro_msg = autenticar_no_suap(identificador, senha)
+            if not sucesso:
+                messages.error(request, erro_msg or 'Erro ao autenticar no SUAP.')
+                return render(request, 'PagsUsuario/login.html')
+
+            user = sincronizar_ou_criar_aluno_suap(dados_suap)
+            if not user.is_active:
+                messages.error(request, 'Sua conta está inativa. Entre em contato com a administração.')
+                return render(request, 'PagsUsuario/login.html')
+
+            user.backend = 'django.contrib.auth.backends.ModelBackend'
+            auth_login(request, user)
+            if tokens:
+                request.session['suap_access_token'] = tokens.get('access')
+                request.session['suap_refresh_token'] = tokens.get('refresh')
+            messages.success(request, f'Login realizado com sucesso via SUAP! Bem-vindo(a), {user.first_name or user.username}.')
+            return redirect('feed')
+
+        # === 2. Login convencional (E-mail ou Usuário) ===
+        user_obj = User.objects.filter(email__iexact=identificador).first()
+        if not user_obj:
+            user_obj = User.objects.filter(username__iexact=identificador).first()
+
+        if not user_obj:
+            if identificador.isdigit() and len(identificador) >= 6:
+                messages.error(request, 'Usuário não encontrado localmente. Para entrar com sua matrícula do IFRN, utilize o botão "Entrar com o SUAP".')
+            else:
+                messages.error(request, 'Usuário com este e-mail não existe!')
             return render(request, 'PagsUsuario/login.html')
 
         # ➤ Se o usuário existe mas está inativo, avisar antes mesmo de autenticar
@@ -63,7 +94,6 @@ def login(request):
             auth_login(request, user)
             messages.success(request, 'Login feito com sucesso!')
             return redirect('feed')
-
         else:
             messages.error(request, 'Senha incorreta! Tente novamente.')
             return render(request, 'PagsUsuario/login.html')
@@ -1156,7 +1186,7 @@ Equipe Habitus
 #@csrf_exempt
 #@csrf_protect
 def entrar_pelo_suap(request):
-    return render(request, 'PagsUsuario/entrar_pelo_suap.html')
+    return redirect('login')
 
 #@csrf_exempt
 #@csrf_protect
