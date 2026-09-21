@@ -1,2 +1,25 @@
-db.sqlite3
+# Arquivos de ambiente e segredos locais
 .env
+.env.local
+
+# Bancos de dados locais e backups SQLite
+*.sqlite3
+*.sqlite3-journal
+devadmin/data/*.sqlite3
+devadmin/data/db_backup*
+
+# Caches do Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Estáticos compilados pelo collectstatic
+devadmin/staticfiles/
+
+# Logs e arquivos temporários do SO
+*.log
+.DS_Store
+Thumbs.db

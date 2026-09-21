@@ -1,202 +1,218 @@
 #!/usr/bin/env python
 """
-Script para migrar de SQLite para PostgreSQL.
-Execute: python migrate_to_postgres.py
+Script automatizado para migração de SQLite para PostgreSQL.
+Uso: python migrate_to_postgres.py [--database-url POSTGRES_URL] [--yes]
 """
 import os
 import sys
-import json
+import shutil
 from datetime import datetime
 import subprocess
 from pathlib import Path
+import argparse
 
-# Adiciona o projeto ao path
 BASE_DIR = Path(__file__).resolve().parent
-sys.path.append(str(BASE_DIR))
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'devadmin.settings')
+def find_sqlite_db():
+    """Localiza o arquivo do banco SQLite atual"""
+    candidates = [
+        BASE_DIR / 'devadmin' / 'data' / 'db.sqlite3',
+        BASE_DIR / 'db.sqlite3',
+    ]
+    for c in candidates:
+        if c.exists() and c.stat().st_size > 0:
+            return c
+    return None
 
-import django
-django.setup()
+def backup_sqlite(sqlite_path):
+    """Cria backup do banco SQLite"""
+    backup_file = sqlite_path.parent / f"db_backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.sqlite3"
+    shutil.copy2(sqlite_path, backup_file)
+    print(f"✅ Backup SQLite criado: {backup_file}")
+    return backup_file
 
-from django.core import serializers
-from django.apps import apps
-
-def backup_sqlite():
-    """Faz backup do banco SQLite atual"""
-    backup_file = BASE_DIR / f"db_backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.sqlite3"
-    original_db = BASE_DIR / "db.sqlite3"
+def export_sqlite_data(output_file):
+    """Exporta todos os dados do SQLite usando dumpdata nativo do Django"""
+    print("📤 Exportando dados do SQLite com dumpdata...")
+    env = os.environ.copy()
+    env.pop('DATABASE_URL', None)  # Garante uso do SQLite local
     
-    if original_db.exists():
-        import shutil
-        shutil.copy2(original_db, backup_file)
-        print(f"✅ Backup criado: {backup_file}")
-        return backup_file
+    cmd = [
+        sys.executable, "manage.py", "dumpdata",
+        "--natural-foreign",
+        "--natural-primary",
+        "--exclude", "contenttypes",
+        "--exclude", "auth.Permission",
+        "--exclude", "sessions.Session",
+        "--indent", "2",
+        "-o", str(output_file)
+    ]
+    result = subprocess.run(cmd, cwd=str(BASE_DIR), env=env, capture_output=True, text=True)
+    if result.returncode != 0:
+        print(f"❌ Erro ao exportar dados: {result.stderr}")
+        return False
+    
+    print(f"✅ Dados exportados para: {output_file} ({output_file.stat().st_size} bytes)")
+    return True
+
+def test_postgres_connection(db_url):
+    """Testa se a conexão com o PostgreSQL está funcionando"""
+    print(f"\n🔍 Testando conexão com PostgreSQL...")
+    try:
+        import dj_database_url
+        import psycopg2
+        cfg = dj_database_url.parse(db_url)
+        conn = psycopg2.connect(
+            dbname=cfg['NAME'],
+            user=cfg['USER'],
+            password=cfg['PASSWORD'],
+            host=cfg['HOST'] or 'localhost',
+            port=cfg['PORT'] or 5432,
+            connect_timeout=5
+        )
+        cur = conn.cursor()
+        cur.execute("SELECT version();")
+        version = cur.fetchone()[0]
+        cur.close()
+        conn.close()
+        print(f"✅ Conexão bem-sucedida! {version}")
+        return True
+    except Exception as e:
+        print(f"❌ Falha ao conectar no PostgreSQL: {e}")
+        return False
+
+def run_postgres_migrations(db_url):
+    """Aplica migrações no PostgreSQL"""
+    print("\n⚙️  Aplicando migrações no PostgreSQL...")
+    env = os.environ.copy()
+    env['DATABASE_URL'] = db_url
+    cmd = [sys.executable, "manage.py", "migrate", "--noinput"]
+    result = subprocess.run(cmd, cwd=str(BASE_DIR), env=env, capture_output=True, text=True)
+    if result.returncode != 0:
+        print(f"❌ Erro nas migrações:\n{result.stderr}")
+        return False
+    print("✅ Migrações aplicadas com sucesso no PostgreSQL.")
+    return True
+
+def import_postgres_data(db_url, fixture_file):
+    """Carrega dados no PostgreSQL usando loaddata"""
+    print(f"\n📥 Importando dados para o PostgreSQL a partir de {fixture_file.name}...")
+    env = os.environ.copy()
+    env['DATABASE_URL'] = db_url
+    cmd = [sys.executable, "manage.py", "loaddata", str(fixture_file)]
+    result = subprocess.run(cmd, cwd=str(BASE_DIR), env=env, capture_output=True, text=True)
+    if result.returncode != 0:
+        print(f"❌ Erro no loaddata:\n{result.stderr}")
+        return False
+    print(result.stdout.strip())
+    print("✅ Dados importados com sucesso!")
+    return True
+
+def reset_postgres_sequences(db_url):
+    """Corrige sequências autoincrement no PostgreSQL para evitar erro de ID duplicado"""
+    print("\n🔄 Atualizando sequências de IDs no PostgreSQL...")
+    env = os.environ.copy()
+    env['DATABASE_URL'] = db_url
+    
+    # Gera comandos SQL para resetar sequências
+    cmd = [sys.executable, "manage.py", "sqlsequencereset", "habitusapp", "auth"]
+    result = subprocess.run(cmd, cwd=str(BASE_DIR), env=env, capture_output=True, text=True)
+    if result.returncode == 0 and result.stdout.strip():
+        sql = result.stdout
+        import dj_database_url
+        import psycopg2
+        cfg = dj_database_url.parse(db_url)
+        conn = psycopg2.connect(
+            dbname=cfg['NAME'],
+            user=cfg['USER'],
+            password=cfg['PASSWORD'],
+            host=cfg['HOST'] or 'localhost',
+            port=cfg['PORT'] or 5432
+        )
+        conn.autocommit = True
+        cur = conn.cursor()
+        cur.execute(sql)
+        cur.close()
+        conn.close()
+        print("✅ Sequências de IDs atualizadas com sucesso!")
     else:
-        print("⚠️  Banco SQLite não encontrado")
-        return None
+        print("⚠️  Nenhuma sequência precisou ser atualizada.")
 
-def export_data():
-    """Exporta todos os dados para JSON"""
-    print("📤 Exportando dados do SQLite...")
-    
-    # Exclui tabelas que não precisam ser migradas
-    exclude_models = ['contenttypes.ContentType', 'auth.Permission', 'sessions.Session']
-    
-    all_models = []
-    for app_config in apps.get_app_configs():
-        for model in app_config.get_models():
-            model_name = f"{app_config.label}.{model.__name__}"
-            if model_name not in exclude_models:
-                all_models.append(model)
-    
-    # Exporta dados
-    data = []
-    for model in all_models:
-        try:
-            model_data = serializers.serialize('json', model.objects.all())
-            if model_data != '[]':
-                data.append(model_data)
-                print(f"  ✓ {model._meta.label}: {model.objects.count()} registros")
-        except Exception as e:
-            print(f"  ✗ {model._meta.label}: Erro - {e}")
-    
-    # Salva em arquivo
-    output_file = BASE_DIR / "data_export.json"
-    with open(output_file, 'w', encoding='utf-8') as f:
-        # Junta todos os dados em um array válido
-        f.write('[' + ','.join(data) + ']')
-    
-    print(f"✅ Dados exportados para: {output_file}")
-    return output_file
+def verify_migration(db_url):
+    """Verifica e exibe contagem de dados migrados no PostgreSQL"""
+    print("\n📊 Verificando contagem de dados no PostgreSQL:")
+    env = os.environ.copy()
+    env['DATABASE_URL'] = db_url
+    script = """
+from habitusapp.models import Exercicio, Treino, Aluno, Professor, Admin, Noticia, TreinoExercicio, Notificacao, Progresso, SolicitacaoDeTreino
+from django.contrib.auth.models import User
 
-def setup_postgres():
-    """Configura e testa conexão com PostgreSQL"""
-    print("\n🔧 Configurando PostgreSQL...")
-    
-    from django.db import connection
-    
-    try:
-        # Testa conexão
-        with connection.cursor() as cursor:
-            cursor.execute("SELECT version();")
-            version = cursor.fetchone()
-            print(f"✅ Conectado ao PostgreSQL: {version[0]}")
-            
-            # Mostra informações do banco
-            cursor.execute("SELECT current_database(), current_user;")
-            db_info = cursor.fetchone()
-            print(f"📊 Banco: {db_info[0]}, Usuário: {db_info[1]}")
-        
-        return True
-    except Exception as e:
-        print(f"❌ Erro na conexão com PostgreSQL: {e}")
-        print("\n📝 Verifique sua configuração:")
-        print("1. DATABASE_URL no .env ou variáveis de ambiente")
-        print("2. Banco criado e permissões concedidas")
-        print("3. PostgreSQL rodando na porta correta")
-        return False
-
-def import_data(data_file):
-    """Importa dados para PostgreSQL"""
-    print("\n📥 Importando dados para PostgreSQL...")
-    
-    try:
-        # Carrega os dados
-        with open(data_file, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        
-        # Desativa sinais durante importação
-        from django.db import transaction
-        
-        with transaction.atomic():
-            for obj in data:
-                try:
-                    # Usa natural keys para evitar conflitos de IDs
-                    model = apps.get_model(obj["model"])
-                    
-                    # Tenta usar natural key se disponível
-                    natural_key = obj.get("natural_key", None)
-                    
-                    if natural_key and hasattr(model.objects, 'get_by_natural_key'):
-                        # Evita duplicação usando natural keys
-                        try:
-                            model.objects.get_by_natural_key(*natural_key)
-                            print(f"  ⚠️  {obj['model']} já existe (pulando)")
-                            continue
-                        except model.DoesNotExist:
-                            pass
-                    
-                    # Cria objeto
-                    deserialized_obj = list(serializers.deserialize('json', json.dumps([obj])))
-                    for item in deserialized_obj:
-                        item.save()
-                
-                except Exception as e:
-                    print(f"  ⚠️  Erro em {obj['model']}: {e}")
-                    continue
-        
-        print("✅ Dados importados com sucesso!")
-        return True
-        
-    except Exception as e:
-        print(f"❌ Erro na importação: {e}")
-        return False
+models = [User, Exercicio, Treino, Aluno, Professor, Admin, Noticia, TreinoExercicio, Notificacao, Progresso, SolicitacaoDeTreino]
+for m in models:
+    print(f"   ✓ {m.__name__}: {m.objects.count()} registro(s)")
+"""
+    cmd = [sys.executable, "manage.py", "shell", "-c", script]
+    result = subprocess.run(cmd, cwd=str(BASE_DIR), env=env, capture_output=True, text=True)
+    print(result.stdout)
 
 def main():
-    """Fluxo principal de migração"""
+    parser = argparse.ArgumentParser(description="Migrador SQLite para PostgreSQL")
+    parser.add_argument("--database-url", default=os.getenv("DATABASE_URL", "postgres://habitus:habituspassword@localhost:5432/habitus"),
+                        help="URL de conexão com o PostgreSQL")
+    parser.add_argument("--yes", "-y", action="store_true", help="Executa sem pedir confirmação")
+    args = parser.parse_args()
+
     print("=" * 60)
-    print("🔄 MIGRAÇÃO SQLite → PostgreSQL")
+    print("🚀 MIGRAÇÃO HABITUS: SQLite → PostgreSQL")
     print("=" * 60)
-    
-    # 1. Backup
-    print("\n1. Backup do SQLite")
-    backup_file = backup_sqlite()
-    
-    # 2. Exportar dados
-    print("\n2. Exportação de dados")
-    data_file = export_data()
-    
-    # 3. Pergunta se quer continuar
-    response = input("\n⏸️  Dados exportados. Deseja continuar com a migração? (s/n): ")
-    if response.lower() != 's':
-        print("Migração cancelada.")
-        return
-    
-    # 4. Configurar PostgreSQL
-    print("\n3. Configuração do PostgreSQL")
-    print("⚠️  Certifique-se de que:")
-    print("   - DATABASE_URL está configurado no .env")
-    print("   - Ou variáveis DB_* estão definidas")
-    print("   - O banco PostgreSQL está acessível")
-    
-    input("\nPressione Enter para continuar...")
-    
-    if not setup_postgres():
-        return
-    
-    # 5. Aplicar migrações
-    print("\n4. Aplicando migrações")
-    try:
-        subprocess.run([sys.executable, "manage.py", "migrate"], check=True)
-        print("✅ Migrações aplicadas")
-    except subprocess.CalledProcessError as e:
-        print(f"❌ Erro nas migrações: {e}")
-        return
-    
-    # 6. Importar dados
-    print("\n5. Importação de dados")
-    if import_data(data_file):
-        print("\n🎉 Migração concluída com sucesso!")
-        print("\n📋 Próximos passos:")
-        print("1. Teste o sistema: python manage.py runserver")
-        print("2. Verifique se todos os dados estão presentes")
-        print("3. Faça login com seu usuário admin")
-        print("4. Remova os arquivos temporários se tudo estiver OK:")
-        print(f"   - {data_file}")
-        print(f"   - {backup_file} (após confirmar que está tudo OK)")
-    else:
-        print("\n❌ Migração falhou. O backup está em:", backup_file)
+
+    # 1. Localiza SQLite
+    sqlite_db = find_sqlite_db()
+    if not sqlite_db:
+        print("❌ Nenhum banco SQLite encontrado.")
+        sys.exit(1)
+    print(f"📁 Banco SQLite encontrado: {sqlite_db}")
+
+    # 2. Backup SQLite
+    backup_file = backup_sqlite(sqlite_db)
+
+    # 3. Exporta dados
+    export_file = BASE_DIR / "datadump.json"
+    if not export_sqlite_data(export_file):
+        sys.exit(1)
+
+    # 4. Confirmação
+    if not args.yes:
+        resp = input(f"\nProsseguir com a migração para {args.database_url}? [S/n]: ")
+        if resp.lower() not in ('s', 'sim', 'y', 'yes', ''):
+            print("Migração cancelada pelo usuário.")
+            sys.exit(0)
+
+    # 5. Testa conexão PostgreSQL
+    if not test_postgres_connection(args.database_url):
+        print("\nCertifique-se de que o container PostgreSQL está em execução:")
+        print("  docker compose up -d db")
+        sys.exit(1)
+
+    # 6. Migrações no PostgreSQL
+    if not run_postgres_migrations(args.database_url):
+        sys.exit(1)
+
+    # 7. Importa dados
+    if not import_postgres_data(args.database_url, export_file):
+        sys.exit(1)
+
+    # 8. Corrige sequences
+    reset_postgres_sequences(args.database_url)
+
+    # 9. Verificação final
+    verify_migration(args.database_url)
+
+    print("=" * 60)
+    print("🎉 Migração para PostgreSQL concluída com sucesso!")
+    print(f"📦 Backup SQLite salvo em: {backup_file}")
+    print(f"📄 Fixture de dados salva em: {export_file}")
+    print("=" * 60)
 
 if __name__ == "__main__":
     main()

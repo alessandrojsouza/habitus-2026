@@ -1,0 +1,13 @@
+.git
+.gitignore
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.env
+db_backup*
+data_export.json
+datadump.json
+devadmin/data/db.sqlite3
+devadmin/data/db_backup*
+.pytest_cache

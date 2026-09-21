@@ -27,11 +27,16 @@ MIDDLEWARE = [
     'django.middleware.locale.LocaleMiddleware',
 ]
 
-# Use o BASE_DIR definido em settings.py (aponta para o pacote devadmin)
-# e mantenha o banco SQLite dentro de `devadmin/data/db.sqlite3`.
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': str(Path(__file__).resolve().parent.parent / 'data' / 'db.sqlite3'),
+# Use DATABASE_URL se configurada (ex: PostgreSQL no Docker/Dev), caso contrário mantenha SQLite local
+DATABASE_URL = config('DATABASE_URL', default=None)
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': str(Path(__file__).resolve().parent.parent / 'data' / 'db.sqlite3'),
+        }
+    }
