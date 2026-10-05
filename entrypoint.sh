@@ -55,11 +55,14 @@ if Exercicio.objects.count() == 0:
     import io
     from django.db import connection
     out = io.StringIO()
-    call_command('sqlsequencereset', 'habitusapp', 'auth', stdout=out)
+    call_command('sqlsequencereset', 'habitusapp', 'auth', stdout=out, no_color=True)
     sql = out.getvalue()
     if sql:
         with connection.cursor() as cur:
-            cur.execute(sql)
+            for stmt in sql.split(';'):
+                stmt = stmt.strip()
+                if stmt and stmt not in ('BEGIN', 'COMMIT'):
+                    cur.execute(stmt)
     print('Dados iniciais carregados e sequências atualizadas com sucesso!')
 else:
     print(f'Banco já inicializado ({Exercicio.objects.count()} exercícios encontrados).')

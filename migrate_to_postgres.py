@@ -35,7 +35,7 @@ def export_sqlite_data(output_file):
     """Exporta todos os dados do SQLite usando dumpdata nativo do Django"""
     print("📤 Exportando dados do SQLite com dumpdata...")
     env = os.environ.copy()
-    env.pop('DATABASE_URL', None)  # Garante uso do SQLite local
+    env['DATABASE_URL'] = ''  # Sobrescreve .env garantindo uso do SQLite local
     
     cmd = [
         sys.executable, "manage.py", "dumpdata",
@@ -114,8 +114,8 @@ def reset_postgres_sequences(db_url):
     env = os.environ.copy()
     env['DATABASE_URL'] = db_url
     
-    # Gera comandos SQL para resetar sequências
-    cmd = [sys.executable, "manage.py", "sqlsequencereset", "habitusapp", "auth"]
+    # Gera comandos SQL para resetar sequências sem cores ANSI
+    cmd = [sys.executable, "manage.py", "sqlsequencereset", "--no-color", "habitusapp", "auth"]
     result = subprocess.run(cmd, cwd=str(BASE_DIR), env=env, capture_output=True, text=True)
     if result.returncode == 0 and result.stdout.strip():
         sql = result.stdout
@@ -131,7 +131,10 @@ def reset_postgres_sequences(db_url):
         )
         conn.autocommit = True
         cur = conn.cursor()
-        cur.execute(sql)
+        for stmt in sql.split(';'):
+            stmt = stmt.strip()
+            if stmt and stmt not in ('BEGIN', 'COMMIT'):
+                cur.execute(stmt)
         cur.close()
         conn.close()
         print("✅ Sequências de IDs atualizadas com sucesso!")

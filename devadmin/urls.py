@@ -15,7 +15,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
+from django.views.static import serve
 from django.contrib.auth.views import LogoutView
 from habitusapp.views.viewsUsuario import *
 from habitusapp.views.viewsAdmin import *
@@ -102,6 +103,10 @@ urlpatterns = [
     path('cadastrar-professor/', viewsAdmin.cadastrar_professor, name='cadastrar_professor'),
 ]
 
-# Configuração de arquivos de mídia (Apenas em DEBUG)
+# Configuração de arquivos de mídia
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+else:
+    urlpatterns += [
+        re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+    ]
