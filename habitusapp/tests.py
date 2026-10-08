@@ -118,3 +118,117 @@ class ConfirmacaoSenhaTestCase(TestCase):
         self.assertRedirects(response, reverse('login'))
         self.user.refresh_from_db()
         self.assertTrue(self.user.check_password('oldpassword123'))
+
+
+from unittest.mock import patch, MagicMock
+from habitusapp.suap import autenticar_no_suap, sincronizar_ou_criar_aluno_suap, formatar_cpf
+
+
+class SuapAuthTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_formatar_cpf(self):
+        self.assertEqual(formatar_cpf('12345678901'), '123.456.789-01')
+        self.assertEqual(formatar_cpf('123.456.789-01'), '123.456.789-01')
+        self.assertEqual(formatar_cpf('', '20231011110020'), 'SUAP2023101111')
+
+    @patch('requests.post')
+    @patch('requests.get')
+    def test_autenticar_no_suap_sucesso(self, mock_get, mock_post):
+        mock_post_resp = MagicMock()
+        mock_post_resp.status_code = 200
+        mock_post_resp.json.return_value = {
+            'access': 'fake_access_token',
+            'refresh': 'fake_refresh_token',
+            'username': '20231011110020'
+        }
+        mock_post.return_value = mock_post_resp
+
+        mock_get_resp = MagicMock()
+        mock_get_resp.status_code = 200
+        mock_get_resp.json.return_value = {
+            'identificacao': '20231011110020',
+            'nome': 'Aluno Teste SUAP',
+            'email': 'aluno@escolar.ifrn.edu.br',
+            'cpf': '11122233344',
+            'data_de_nascimento': '2002-05-15',
+            'foto': None
+        }
+        mock_get.return_value = mock_get_resp
+
+        sucesso, dados, tokens, erro = autenticar_no_suap('20231011110020', 'senha123')
+        self.assertTrue(sucesso)
+        self.assertIsNone(erro)
+        self.assertEqual(tokens['access'], 'fake_access_token')
+        self.assertEqual(dados['identificacao'], '20231011110020')
+        self.assertEqual(dados['nome'], 'Aluno Teste SUAP')
+
+    @patch('requests.post')
+    def test_autenticar_no_suap_credenciais_invalidas(self, mock_post):
+        mock_post_resp = MagicMock()
+        mock_post_resp.status_code = 401
+        mock_post.return_value = mock_post_resp
+
+        sucesso, dados, tokens, erro = autenticar_no_suap('20231011110020', 'senha_errada')
+        self.assertFalse(sucesso)
+        self.assertIn('incorretos', erro)
+
+    def test_sincronizar_ou_criar_aluno_suap_cria_novo(self):
+        dados_suap = {
+            'identificacao': '20231011110020',
+            'nome': 'Novo Aluno SUAP',
+            'email': 'novoaluno@escolar.ifrn.edu.br',
+            'cpf': '99988877766',
+            'data_de_nascimento': '2003-04-10',
+            'foto': None
+        }
+        user = sincronizar_ou_criar_aluno_suap(dados_suap)
+        self.assertIsNotNone(user)
+        self.assertEqual(user.username, '20231011110020')
+        self.assertTrue(hasattr(user, 'aluno'))
+        self.assertEqual(user.aluno.matricula, '20231011110020')
+        self.assertEqual(user.aluno.nome, 'Novo Aluno SUAP')
+        self.assertTrue(user.groups.filter(name='Aluno').exists())
+
+    @patch('habitusapp.views.viewsUsuario.autenticar_no_suap')
+    def test_login_view_suap_sucesso(self, mock_auth):
+        mock_auth.return_value = (
+            True,
+            {
+                'identificacao': '20231011110099',
+                'nome': 'Aluno Login View',
+                'email': 'alunologin@escolar.ifrn.edu.br',
+                'cpf': '55544433322',
+                'data_de_nascimento': '2001-01-01',
+                'foto': None
+            },
+            {'access': 'tok_acc', 'refresh': 'tok_ref'},
+            None
+        )
+
+        response = self.client.post(reverse('login'), {
+            'tipo_login': 'suap',
+            'email': '20231011110099',
+            'senha': 'senha_correta_suap'
+        })
+        self.assertRedirects(response, reverse('feed'))
+        self.assertEqual(self.client.session.get('suap_access_token'), 'tok_acc')
+
+    @patch('habitusapp.views.viewsUsuario.autenticar_no_suap')
+    def test_login_view_suap_falha(self, mock_auth):
+        mock_auth.return_value = (
+            False,
+            None,
+            None,
+            'Matrícula ou senha do SUAP incorretos! Verifique suas credenciais no SUAP.'
+        )
+
+        response = self.client.post(reverse('login'), {
+            'tipo_login': 'suap',
+            'email': '20231011110099',
+            'senha': 'senha_incorreta'
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'incorretos')
+
