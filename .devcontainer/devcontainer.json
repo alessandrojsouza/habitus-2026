@@ -1,0 +1,22 @@
+{
+  "name": "Habitus 2026",
+  "postStartCommand": "bash .devcontainer/on-start.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-azuretools.vscode-docker"
+      ]
+    }
+  },
+  "portsAttributes": {
+    "8000": {
+      "label": "Aplicação Web (Django)",
+      "onAutoForward": "openBrowser"
+    },
+    "5432": {
+      "label": "PostgreSQL",
+      "onAutoForward": "ignore"
+    }
+  }
+}

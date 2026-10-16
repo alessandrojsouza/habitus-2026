@@ -33,6 +33,9 @@ docker compose up -d
 - **Aplicação Web:** [http://localhost:8000](http://localhost:8000)
 - **Painel Administrativo:** [http://localhost:8000/admin](http://localhost:8000/admin)
 
+> **💡 GitHub Codespaces:**
+> O repositório já inclui configuração nativa em `.devcontainer/` que ajusta automaticamente o roteamento de rede do Docker. Ao abrir o projeto no Codespaces, basta rodar `docker compose up -d`.
+
 ---
 
 ## 🛠️ Comandos Úteis com Docker
