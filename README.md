@@ -26,7 +26,6 @@ O **Habitus** é uma aplicação web voltada aos servidores e alunos do **IFRN �
 - **Gestão e Execução de Treinos:** Acompanhamento interativo do treino em tempo real com marcação de exercícios concluídos, séries, repetições e cargas.
 - **Área do Professor / Instrutor:** Prescrição e edição de fichas de treino personalizadas para alunos e publicação de avisos no mural.
 - **Acompanhamento Antropométrico:** Histórico de progresso físico com registro de medidas corporais, dobras cutâneas e peso.
-- **Catálogo de Exercícios:** Base cadastrada com 49 exercícios categorizados por grupo muscular, incluindo imagens e vídeos demonstrativos.
 - **Feed e Notificações:** Avisos da academia, solicitações de treino e comunicados gerais.
 
 ---
