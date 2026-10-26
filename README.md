@@ -71,9 +71,6 @@ docker compose up -d
 # Ver os logs da aplicação:
 docker compose logs -f web
 
-# Criar um superusuário administrador:
-docker compose exec web python manage.py createsuperuser
-
 # Parar os contêineres:
 docker compose down
 ```
