@@ -65,11 +65,8 @@ docker compose up -d
 - **Aplicação Web:** [http://localhost:8000](http://localhost:8000)
 - **Painel Administrativo:** [http://localhost:8000/admin](http://localhost:8000/admin)
 
-### Comandos Úteis
+### Outros comandos
 ```bash
-# Ver os logs da aplicação:
-docker compose logs -f web
-
 # Parar os contêineres:
 docker compose down
 ```
