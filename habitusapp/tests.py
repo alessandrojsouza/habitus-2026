@@ -4,6 +4,15 @@ from django.core import mail
 from django.urls import reverse
 from habitusapp.models import Aluno, ConfirmacaoSenha
 
+from django.template.context import BaseContext
+def _fixed_base_copy(self):
+    duplicate = object.__new__(self.__class__)
+    duplicate.__dict__.update(self.__dict__)
+    duplicate.dicts = self.dicts[:]
+    return duplicate
+BaseContext.__copy__ = _fixed_base_copy
+
+
 
 class ConfirmacaoSenhaTestCase(TestCase):
     def setUp(self):
@@ -231,4 +240,48 @@ class SuapAuthTestCase(TestCase):
         })
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'incorretos')
+
+    def test_login_page_renders_only_suap_option_and_matricula(self):
+        """Verifica se na página de login os botões convencionais foram removidos e o placeholder é Matrícula"""
+        response = self.client.get(reverse('login'))
+        self.assertEqual(response.status_code, 200)
+        content = response.content.decode('utf-8')
+        
+        # Placeholder Matrícula presente
+        self.assertIn('placeholder="Matrícula"', content)
+        # Botão SUAP presente
+        self.assertIn('btn-suap', content)
+        self.assertIn('Entrar com SUAP', content)
+        
+        # Botões de entrar convencional e criar conta / cadastrar removidos
+        self.assertNotIn('btn-principal', content)
+        self.assertNotIn('btn-secundario', content)
+        self.assertNotIn('Criar Conta', content)
+        self.assertNotIn('class="ou-linha"', content)
+
+    @patch('habitusapp.views.viewsUsuario.autenticar_no_suap')
+    def test_login_com_enter_autentica_automaticamente_com_suap(self, mock_auth):
+        """Testa se submeter o formulário sem clicar em botão (apenas tecla Enter) autentica pelo SUAP"""
+        mock_auth.return_value = (
+            True,
+            {
+                'identificacao': '20231011110088',
+                'nome': 'Aluno Enter Test',
+                'email': 'alunoenter@escolar.ifrn.edu.br',
+                'cpf': '12312312312',
+                'data_de_nascimento': '2001-01-01',
+                'foto': None
+            },
+            {'access': 'acc_enter', 'refresh': 'ref_enter'},
+            None
+        )
+
+        # Ao apertar Enter no input, tipicamente são enviados os campos 'matricula' e 'senha'
+        response = self.client.post(reverse('login'), {
+            'matricula': '20231011110088',
+            'senha': 'senha_suap_enter'
+        })
+        self.assertRedirects(response, reverse('feed'))
+        mock_auth.assert_called_once_with('20231011110088', 'senha_suap_enter')
+
 

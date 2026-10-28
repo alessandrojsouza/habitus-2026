@@ -42,61 +42,36 @@ def logout_view(request):
 @csrf_protect
 def login(request):
     if request.method == 'POST':
-        tipo_login = request.POST.get('tipo_login', 'convencional')
-        identificador = (request.POST.get('email') or request.POST.get('identificador') or '').strip()
+        identificador = (
+            request.POST.get('matricula') or 
+            request.POST.get('email') or 
+            request.POST.get('identificador') or 
+            ''
+        ).strip()
         senha = request.POST.get('senha', '')
 
         if not identificador or not senha:
             messages.error(request, 'Por favor, preencha todos os campos.')
             return render(request, 'PagsUsuario/login.html')
 
-        # === 1. Autenticação via SUAP ===
-        if tipo_login == 'suap':
-            sucesso, dados_suap, tokens, erro_msg = autenticar_no_suap(identificador, senha)
-            if not sucesso:
-                messages.error(request, erro_msg or 'Erro ao autenticar no SUAP.')
-                return render(request, 'PagsUsuario/login.html')
-
-            user = sincronizar_ou_criar_aluno_suap(dados_suap)
-            if not user.is_active:
-                messages.error(request, 'Sua conta está inativa. Entre em contato com a administração.')
-                return render(request, 'PagsUsuario/login.html')
-
-            user.backend = 'django.contrib.auth.backends.ModelBackend'
-            auth_login(request, user)
-            if tokens:
-                request.session['suap_access_token'] = tokens.get('access')
-                request.session['suap_refresh_token'] = tokens.get('refresh')
-            messages.success(request, f'Login realizado com sucesso via SUAP! Bem-vindo(a), {user.first_name or user.username}.')
-            return redirect('feed')
-
-        # === 2. Login convencional (E-mail ou Usuário local) ===
-        user_obj = User.objects.filter(email__iexact=identificador).first()
-        if not user_obj:
-            user_obj = User.objects.filter(username__iexact=identificador).first()
-
-        if not user_obj:
-            if identificador.isdigit() and len(identificador) >= 6:
-                messages.error(request, 'Usuário não encontrado localmente. Para entrar com sua matrícula do IFRN, utilize o botão "Entrar com SUAP".')
-            else:
-                messages.error(request, 'Usuário com este e-mail não existe!')
+        # Autenticação exclusiva via SUAP
+        sucesso, dados_suap, tokens, erro_msg = autenticar_no_suap(identificador, senha)
+        if not sucesso:
+            messages.error(request, erro_msg or 'Erro ao autenticar no SUAP.')
             return render(request, 'PagsUsuario/login.html')
 
-        # ➤ Se o usuário existe mas está inativo, avisar antes mesmo de autenticar
-        if not user_obj.is_active:
+        user = sincronizar_ou_criar_aluno_suap(dados_suap)
+        if not user.is_active:
             messages.error(request, 'Sua conta está inativa. Entre em contato com a administração.')
             return render(request, 'PagsUsuario/login.html')
 
-        # Tentar autenticar
-        user = authenticate(request, username=user_obj.username, password=senha)
-
-        if user is not None:
-            auth_login(request, user)
-            messages.success(request, 'Login feito com sucesso!')
-            return redirect('feed')
-        else:
-            messages.error(request, 'Senha incorreta! Tente novamente.')
-            return render(request, 'PagsUsuario/login.html')
+        user.backend = 'django.contrib.auth.backends.ModelBackend'
+        auth_login(request, user)
+        if tokens:
+            request.session['suap_access_token'] = tokens.get('access')
+            request.session['suap_refresh_token'] = tokens.get('refresh')
+        messages.success(request, f'Login realizado com sucesso via SUAP! Bem-vindo(a), {user.first_name or user.username}.')
+        return redirect('feed')
 
     return render(request, 'PagsUsuario/login.html')
 

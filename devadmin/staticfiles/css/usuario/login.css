@@ -61,7 +61,8 @@ form input{
     background: #3B3E52;
     color: white;
 }
-input#email {
+input#email,
+input#matricula {
     margin-bottom: 22px;
 }
 input::placeholder {
@@ -141,6 +142,10 @@ a.btn-secundario{
     font-weight: 600;
     line-height: normal;
     font-size: 25px;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    margin-top: 25px;
 }
 .btn-suap:hover{
     background-color: #50ffc5;
