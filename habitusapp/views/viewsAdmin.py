@@ -14,6 +14,7 @@ from django.db.models import Q
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from habitusapp.forms import ProfessorCadastroForm
 from django.db import transaction
+from datetime import date
 
 @login_required
 def professores(request):
@@ -278,3 +279,86 @@ def cadastrar_professor(request):
         form = ProfessorCadastroForm()
         
     return render(request, 'PagsAdminGestor/cadastrar_professor.html', {'form': form})
+
+
+@login_required
+@user_passes_test(eh_admin_gestor)
+def promover_aluno(request):
+    if request.method == 'POST':
+        aluno_id = request.POST.get('aluno_id')
+        if not aluno_id:
+            messages.error(request, 'Nenhum aluno foi selecionado para promoção.')
+            return redirect('promover_aluno')
+
+        aluno = get_object_or_404(Aluno, id=aluno_id)
+        usuario = aluno.user
+
+        # Proteção caso o usuário já seja professor
+        if hasattr(usuario, 'professor') or Professor.objects.filter(user=usuario).exists():
+            messages.warning(request, f'O usuário "{aluno.nome}" já está cadastrado como Professor.')
+            return redirect('promover_aluno')
+
+        # Verificação se o CPF já pertence a outro professor
+        if Professor.objects.filter(cpf=aluno.cpf).exists():
+            messages.error(request, f'Não foi possível promover: já existe um professor cadastrado com o CPF {aluno.cpf}.')
+            return redirect('promover_aluno')
+
+        # Verificação se o e-mail já pertence a outro professor
+        if Professor.objects.filter(email=aluno.email).exists():
+            messages.error(request, f'Não foi possível promover: já existe um professor cadastrado com o e-mail {aluno.email}.')
+            return redirect('promover_aluno')
+
+        try:
+            with transaction.atomic():
+                # 1. Cria a instância de Professor transferindo os dados do Aluno
+                professor = Professor.objects.create(
+                    user=usuario,
+                    matricula=aluno.matricula,
+                    foto_perfil=aluno.foto_perfil if aluno.foto_perfil else None,
+                    nome=aluno.nome,
+                    cpf=aluno.cpf,
+                    data_nasc=aluno.data_nasc,
+                    email=aluno.email,
+                    telefone=aluno.telefone,
+                    ativo=True,
+                    data_admissao=date.today(),
+                    tipo_trabalho=Professor.Tipo_Trabalho.PROFESSOR,
+                    inst_formacao=None
+                )
+
+                # 2. Atualiza os grupos de permissão
+                grupo_aluno = Group.objects.filter(name='Aluno').first()
+                if grupo_aluno:
+                    usuario.groups.remove(grupo_aluno)
+
+                grupo_prof, _ = Group.objects.get_or_create(name='Professor')
+                usuario.groups.add(grupo_prof)
+
+                # 3. Remove o registro da classe Aluno
+                nome_aluno = aluno.nome
+                aluno.delete()
+
+            messages.success(request, f'Aluno(a) {nome_aluno} foi promovido(a) a Professor(a) com sucesso!')
+            return redirect('promover_aluno')
+        except Exception as e:
+            messages.error(request, f'Erro ao promover aluno a professor: {str(e)}')
+            return redirect('promover_aluno')
+
+    busca = request.GET.get('busca', '').strip()
+    if busca:
+        alunos = Aluno.objects.filter(
+            Q(nome__icontains=busca) |
+            Q(matricula__icontains=busca) |
+            Q(cpf__icontains=busca) |
+            Q(email__icontains=busca) |
+            Q(user__username__icontains=busca)
+        ).order_by('nome')
+    else:
+        alunos = Aluno.objects.all().order_by('nome')
+
+    context = {
+        'alunos': alunos,
+        'busca': busca,
+        'total_alunos': Aluno.objects.count(),
+    }
+    return render(request, 'PagsAdminGestor/promover_aluno.html', context)

@@ -1,0 +1,459 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Lexend Deca', sans-serif;
+}
+
+body {
+    margin-top: 109px;
+    background-color: #070A22;
+    min-height: 100vh;
+    color: #FFFFFF;
+}
+
+header {
+    background-color: #070A22;
+    padding: 2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 45px;
+    z-index: 999;
+}
+
+.seta-voltar {
+    position: absolute;
+    left: 20px;
+}
+
+.seta-voltar img {
+    width: 25px;
+    cursor: pointer;
+    display: block;
+}
+
+.logo-h {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.logo-h img {
+    width: 50px;
+    cursor: pointer;
+    display: block;
+}
+
+.menu-icon {
+    position: absolute;
+    right: 20px;
+}
+
+.menu-icon img {
+    width: 30px;
+    cursor: pointer;
+    display: block;
+}
+
+section.nome-pagina {
+    background-color: #C5F022;
+    text-align: center;
+    display: flex;
+    height: 61px;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+section.nome-pagina h1 {
+    font-size: 20px;
+    color: #070A22;
+    font-weight: 700;
+}
+
+/* MENU LATERAL */
+.menu-lateral {
+    position: fixed;
+    top: 0;
+    right: -500%;
+    width: 80%;
+    max-width: 360px;
+    height: 100vh;
+    background-color: #3B3E52;
+    transition: right 0.3s ease;
+    z-index: 9999;
+    padding: 2em;
+    color: white;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.menu-lateral.ativo {
+    right: 0;
+}
+
+.fechar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 15px;
+}
+
+.fechar h1 {
+    font-size: 18px;
+    color: white;
+}
+
+.fechar-menu {
+    background: none;
+    border: none;
+    font-size: 2em;
+    color: white;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.menu-lateral ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 2em;
+}
+
+.menu-lateral ul > div {
+    display: block;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(217, 217, 217, 0.3);
+}
+
+.menu-lateral li {
+    margin-bottom: 18px;
+}
+
+.menu-lateral li a {
+    display: inline-flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 15px;
+    color: white;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.menu-lateral li a:hover {
+    color: #C5F022;
+}
+
+.menu-lateral img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+/* CONTAINER PRINCIPAL */
+main {
+    padding-bottom: 120px;
+}
+
+.container {
+    max-width: 500px;
+    width: 92%;
+    margin: 1.5em auto;
+}
+
+.subtitulo-promover {
+    font-size: 13px;
+    color: #A0A5BA;
+    text-align: center;
+    margin-bottom: 1.2em;
+    line-height: 1.4;
+}
+
+/* BUSCA */
+.search-wrapper {
+    position: relative;
+    width: 100%;
+    margin-bottom: 1.5em;
+}
+
+.buscar-aluno {
+    width: 100%;
+    height: 42px;
+    background-color: #4E5A6E;
+    color: #FFF;
+    border: none;
+    border-radius: 100px;
+    padding: 0 45px 0 16px;
+    font-size: 14px;
+    outline: none;
+    transition: box-shadow 0.2s ease;
+}
+
+.buscar-aluno:focus {
+    box-shadow: 0 0 0 2px #C5F022;
+}
+
+.buscar-aluno::placeholder {
+    color: #D1D5DB;
+    font-weight: 300;
+}
+
+.search-wrapper img {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+/* LISTA DE ALUNOS */
+.alunos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.card-aluno {
+    background-color: #1E1C37;
+    border-radius: 12px;
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-aluno:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+}
+
+.card-aluno-avatar {
+    flex-shrink: 0;
+}
+
+.card-aluno-avatar img {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #C5F022;
+    display: block;
+}
+
+.card-aluno-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.card-aluno-nome {
+    font-size: 16px;
+    font-weight: 600;
+    color: #FFFFFF;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-aluno-detalhe {
+    font-size: 12px;
+    color: #CBD5E1;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-aluno-detalhe strong {
+    color: #94A3B8;
+    font-weight: 500;
+}
+
+.card-aluno-acao {
+    flex-shrink: 0;
+}
+
+.btn-promover {
+    background-color: #C5F022;
+    color: #070A22;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-promover:hover {
+    background-color: #d8ff36;
+    transform: scale(1.03);
+}
+
+/* SEM ALUNOS */
+.sem-alunos {
+    text-align: center;
+    padding: 3em 1em;
+    color: #CBD5E1;
+    font-size: 14px;
+    background-color: #1E1C37;
+    border-radius: 12px;
+    margin-top: 1em;
+}
+
+/* MODAL DE CONFIRMAÇÃO */
+.modal-backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+    padding: 1em;
+}
+
+.modal-backdrop.ativo {
+    display: flex;
+}
+
+.modal-box {
+    background-color: #1E1C37;
+    border: 1px solid #C5F022;
+    border-radius: 16px;
+    max-width: 420px;
+    width: 100%;
+    padding: 24px;
+    text-align: center;
+    color: #FFFFFF;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    animation: modalAnim 0.25s ease-out;
+}
+
+@keyframes modalAnim {
+    from {
+        opacity: 0;
+        transform: scale(0.92);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal-box h2 {
+    font-size: 18px;
+    color: #C5F022;
+    margin-bottom: 12px;
+}
+
+.modal-box p {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #E2E8F0;
+    margin-bottom: 12px;
+}
+
+.modal-aluno-destaque {
+    font-size: 16px;
+    font-weight: 700;
+    color: #C5F022;
+    display: block;
+    margin: 8px 0;
+}
+
+.modal-aviso-sub {
+    font-size: 12px;
+    color: #94A3B8;
+    margin-bottom: 20px;
+}
+
+.modal-botoes {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.btn-modal-cancelar {
+    background-color: #4E5A6E;
+    color: #FFF;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-modal-cancelar:hover {
+    background-color: #64748B;
+}
+
+.btn-modal-confirmar {
+    background-color: #C5F022;
+    color: #070A22;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-modal-confirmar:hover {
+    background-color: #d8ff36;
+}
+
+/* MENU INFERIOR */
+menu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #3B3E52;
+    padding: 0.8em 1.5em;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 998;
+}
+
+menu img {
+    margin-bottom: 4px;
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+}
+
+menu div a {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+menu h3 {
+    font-size: 10px;
+    color: #FFF;
+    font-weight: 700;
+}

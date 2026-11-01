@@ -13,6 +13,7 @@ SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_DOMAIN = None
 CSRF_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_SAMESITE = 'Lax'
+WHITENOISE_MANIFEST_STRICT = False
 
 # Adicionar middleware para desabilitar CSRF em desenvolvimento
 MIDDLEWARE = [

@@ -101,6 +101,7 @@ urlpatterns = [
     path('professor/<int:pk>/inativar-reativar/', viewsAdmin.inativar_reativar_professor, name='inativar_reativar_professor'),
     path('aluno/<int:pk>/inativar-reativar/', viewsAdmin.inativar_reativar_aluno, name='inativar_reativar_aluno'),
     path('cadastrar-professor/', viewsAdmin.cadastrar_professor, name='cadastrar_professor'),
+    path('promover-aluno/', viewsAdmin.promover_aluno, name='promover_aluno'),
 ]
 
 # Configuração de arquivos de mídia

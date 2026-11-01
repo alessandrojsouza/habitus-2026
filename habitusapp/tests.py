@@ -1,8 +1,9 @@
 from django.test import TestCase, Client
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.core import mail
 from django.urls import reverse
-from habitusapp.models import Aluno, ConfirmacaoSenha
+from datetime import date
+from habitusapp.models import Aluno, ConfirmacaoSenha, Professor
 
 from django.template.context import BaseContext
 def _fixed_base_copy(self):
@@ -563,3 +564,153 @@ class ExcluirTreinoProgressoTestCase(TestCase):
         self.assertEqual(progresso.progresso_valor, 0)
         self.assertEqual(progresso.concluidos, 0)
         self.assertEqual(progresso.dias_treinados, [])
+
+class PromoverAlunoTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+        # Criação dos grupos
+        self.grupo_gestor, _ = Group.objects.get_or_create(name='Admin_Gestor')
+        self.grupo_aluno, _ = Group.objects.get_or_create(name='Aluno')
+        self.grupo_prof, _ = Group.objects.get_or_create(name='Professor')
+        self.grupo_admin, _ = Group.objects.get_or_create(name='Admin')
+
+        # Usuário Admin Gestor
+        self.user_gestor = User.objects.create_user(
+            username='gestor_test',
+            email='gestor@example.com',
+            password='password123'
+        )
+        self.user_gestor.groups.add(self.grupo_gestor)
+
+        # Usuário Aluno comum
+        self.user_aluno = User.objects.create_user(
+            username='aluno_joao',
+            email='joao@example.com',
+            password='password123'
+        )
+        self.user_aluno.groups.add(self.grupo_aluno)
+        self.aluno_joao = Aluno.objects.create(
+            user=self.user_aluno,
+            nome='João da Silva',
+            matricula='20261001',
+            cpf='111.222.333-44',
+            data_nasc=date(2002, 5, 10),
+            email='joao@example.com',
+            telefone='(84) 99999-1111'
+        )
+
+        # Segundo Aluno para testes de busca
+        self.user_aluno2 = User.objects.create_user(
+            username='aluna_maria',
+            email='maria@example.com',
+            password='password123'
+        )
+        self.user_aluno2.groups.add(self.grupo_aluno)
+        self.aluno_maria = Aluno.objects.create(
+            user=self.user_aluno2,
+            nome='Maria Oliveira',
+            matricula='20261002',
+            cpf='555.666.777-88',
+            data_nasc=date(2003, 8, 15),
+            email='maria@example.com',
+            telefone='(84) 99999-2222'
+        )
+
+    def test_acesso_anonimo_redireciona(self):
+        """Usuário anônimo não pode acessar a tela de promover aluno"""
+        response = self.client.get(reverse('promover_aluno'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_acesso_aluno_negado(self):
+        """Usuário aluno comum não pode acessar promover aluno"""
+        self.client.login(username='aluno_joao', password='password123')
+        response = self.client.get(reverse('promover_aluno'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_acesso_admin_gestor_permitido(self):
+        """Usuário admin gestor consegue acessar a tela de promover aluno"""
+        self.client.login(username='gestor_test', password='password123')
+        response = self.client.get(reverse('promover_aluno'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'PagsAdminGestor/promover_aluno.html')
+        self.assertContains(response, 'Promover Aluno')
+        self.assertContains(response, 'João da Silva')
+        self.assertContains(response, 'Maria Oliveira')
+
+    def test_sidebar_opcao_somente_admin_gestor(self):
+        """A aba lateral possui 'Promover Aluno' para Admin Gestor e NÃO para Aluno"""
+        # Admin Gestor no Feed
+        self.client.login(username='gestor_test', password='password123')
+        resp_gestor = self.client.get(reverse('feed'))
+        self.assertEqual(resp_gestor.status_code, 200)
+        content_gestor = resp_gestor.content.decode('utf-8')
+        self.assertIn(reverse('promover_aluno'), content_gestor)
+        self.assertIn('Promover Aluno', content_gestor)
+        self.assertIn(reverse('cadastrar_professor'), content_gestor)
+
+        # Aluno comum no Feed
+        self.client.login(username='aluno_joao', password='password123')
+        resp_aluno = self.client.get(reverse('feed'))
+        self.assertEqual(resp_aluno.status_code, 200)
+        content_aluno = resp_aluno.content.decode('utf-8')
+        self.assertNotIn(reverse('promover_aluno'), content_aluno)
+        self.assertNotIn('Promover Aluno', content_aluno)
+
+    def test_busca_alunos(self):
+        """A barra de pesquisa filtra corretamente os alunos por nome e matrícula"""
+        self.client.login(username='gestor_test', password='password123')
+
+        # Busca por nome João
+        resp = self.client.get(reverse('promover_aluno'), {'busca': 'João'})
+        self.assertEqual(resp.status_code, 200)
+        self.assertContains(resp, 'João da Silva')
+        self.assertNotContains(resp, 'Maria Oliveira')
+
+        # Busca por matrícula de Maria
+        resp_matr = self.client.get(reverse('promover_aluno'), {'busca': '20261002'})
+        self.assertEqual(resp_matr.status_code, 200)
+        self.assertContains(resp_matr, 'Maria Oliveira')
+        self.assertNotContains(resp_matr, 'João da Silva')
+
+        # Busca sem resultados
+        resp_vazio = self.client.get(reverse('promover_aluno'), {'busca': 'NenhumNomeExistente'})
+        self.assertEqual(resp_vazio.status_code, 200)
+        self.assertContains(resp_vazio, 'Nenhum aluno encontrado')
+
+    def test_promover_aluno_sucesso(self):
+        """Admin gestor promove aluno: vira Professor, deixa de ser Aluno e atualiza grupos"""
+        self.client.login(username='gestor_test', password='password123')
+
+        # Post de promoção para João
+        response = self.client.post(reverse('promover_aluno'), {
+            'aluno_id': self.aluno_joao.id
+        })
+        self.assertRedirects(response, reverse('promover_aluno'))
+
+        # Recarrega o usuário do banco
+        self.user_aluno.refresh_from_db()
+
+        # O aluno DEIXA de ser Aluno
+        self.assertFalse(hasattr(self.user_aluno, 'aluno'))
+        self.assertFalse(Aluno.objects.filter(user=self.user_aluno).exists())
+
+        # O aluno AGORA É da classe Professor
+        self.assertTrue(hasattr(self.user_aluno, 'professor'))
+        self.assertTrue(Professor.objects.filter(user=self.user_aluno).exists())
+
+        professor_criado = self.user_aluno.professor
+        self.assertIsInstance(professor_criado, Professor)
+        self.assertEqual(professor_criado.nome, 'João da Silva')
+        self.assertEqual(professor_criado.matricula, '20261001')
+        self.assertEqual(professor_criado.cpf, '111.222.333-44')
+        self.assertEqual(professor_criado.email, 'joao@example.com')
+        self.assertEqual(professor_criado.telefone, '(84) 99999-1111')
+        self.assertTrue(professor_criado.ativo)
+        self.assertEqual(professor_criado.tipo_trabalho, Professor.Tipo_Trabalho.PROFESSOR)
+
+        # Grupos de permissão atualizados
+        grupos_usuario = list(self.user_aluno.groups.values_list('name', flat=True))
+        self.assertIn('Professor', grupos_usuario)
+        self.assertNotIn('Aluno', grupos_usuario)
+

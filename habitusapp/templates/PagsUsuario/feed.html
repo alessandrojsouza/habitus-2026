@@ -82,6 +82,12 @@
                         Cadastrar Professor
                     </a>
                 </li>
+                <li>
+                    <a href="{% url 'promover_aluno' %}">
+                        <img src="{% static 'icones-site/icone-alunos.png' %}" alt="">
+                        Promover Aluno
+                    </a>
+                </li>
             </div>
             <div>
                 <li><a href="{% url 'configuracoes' %}"><img src="{% static 'icones-site/configuracoes.png' %}"
@@ -97,7 +103,6 @@
             </div>
         </ul>
     </nav>
-    {% endif %}
 
     {% elif user.groups.first.name == "Professor" %}
     <!-- MENU PARA PROFESSOR -->
@@ -182,6 +187,7 @@
             </div>
         </ul>
     </nav>
+    {% endif %}
     {% endif %}
 
 
