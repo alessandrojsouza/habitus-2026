@@ -24,6 +24,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
+      - .:/usr/src/python/app
       - ./devadmin/media:/usr/src/python/app/devadmin/media
       - ./datadump.json:/usr/src/python/app/datadump.json:ro
     environment:

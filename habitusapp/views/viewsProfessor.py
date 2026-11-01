@@ -5,6 +5,7 @@ from django.db import models
 from django.utils import timezone
 from django.http import JsonResponse
 from habitusapp.models import Professor, Admin, Noticia, Aluno, Treino, Progresso, TreinoExercicio
+from habitusapp.signals import ajustar_progresso_ao_excluir_treino
 from habitusapp.forms import AlunoForm, NoticiaForm, ProgressoForm, AlunoEditForm, TreinoFormEdit, TreinoExercicioFormSet
 import datetime
 import os
@@ -399,6 +400,11 @@ def excluir_treino_professor(request, treino_id, aluno_id):
 
     if request.method == "POST":
         nome_treino = treino.nome
+        ajustar_progresso_ao_excluir_treino(
+            treino_id=treino.id,
+            usuario_id=aluno.user.id,
+            treino_nome=treino.nome
+        )
         treino.delete()
         messages.success(request, f'Treino "{nome_treino}" excluído com sucesso!')
         return redirect('gerenciar_treinos', aluno_id=aluno_id)

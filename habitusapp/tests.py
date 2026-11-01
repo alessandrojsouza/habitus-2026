@@ -285,3 +285,281 @@ class SuapAuthTestCase(TestCase):
         mock_auth.assert_called_once_with('20231011110088', 'senha_suap_enter')
 
 
+import datetime
+from habitusapp.models import Treino, Progresso, Professor
+
+
+class ExcluirTreinoProgressoTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            username='aluno_teste',
+            email='aluno@example.com',
+            password='password123'
+        )
+        self.aluno = Aluno.objects.create(
+            user=self.user,
+            nome='Aluno Teste',
+            cpf='11122233344',
+            data_nasc='2000-01-01'
+        )
+
+    def test_excluir_treino_unico_zera_contagem_e_concluidos(self):
+        """Ao excluir o único treino do usuário, a contagem de sessões e os concluídos associados são zerados."""
+        self.client.login(username='aluno_teste', password='password123')
+
+        treino = Treino.objects.create(
+            nome='Treino A',
+            data_inicio=datetime.date(2026, 10, 1),
+            data_fim=datetime.date(2026, 10, 11),  # 10 dias
+            usuario=self.user
+        )
+
+        progresso = Progresso.objects.create(
+            usuario=self.user,
+            progresso_valor=10,
+            concluidos=3,
+            ultimo_treino_id=treino.id,
+            dias_treinados=[
+                {'date': '2026-10-02', 'treino_id': treino.id, 'nome': treino.nome},
+                {'date': '2026-10-03', 'treino_id': treino.id, 'nome': treino.nome},
+                {'date': '2026-10-04', 'treino_id': treino.id, 'nome': treino.nome},
+            ]
+        )
+
+        # Exclui o treino via POST
+        response = self.client.post(reverse('excluir_treino', args=[treino.id]))
+        self.assertRedirects(response, reverse('treinos'))
+
+        self.assertEqual(Treino.objects.filter(id=treino.id).count(), 0)
+
+        progresso.refresh_from_db()
+        self.assertEqual(progresso.progresso_valor, 0)
+        self.assertEqual(progresso.concluidos, 0)
+        self.assertEqual(progresso.dias_treinados, [])
+        self.assertIsNone(progresso.ultimo_treino_id)
+
+        # Verifica na página de treinos o que é mostrado para o usuário
+        resp_treinos = self.client.get(reverse('treinos'))
+        self.assertContains(resp_treinos, '0 / 0 sessões')
+
+    def test_excluir_treino_multiplo_subtrai_apenas_concluidos_e_sessao_associadas(self):
+        """Ao excluir um treino específico entre vários, apenas suas sessões e concluídos são removidos."""
+        self.client.login(username='aluno_teste', password='password123')
+
+        treino_a = Treino.objects.create(
+            nome='Treino A',
+            data_inicio=datetime.date(2026, 10, 1),
+            data_fim=datetime.date(2026, 10, 11),  # 10 dias
+            usuario=self.user
+        )
+        treino_b = Treino.objects.create(
+            nome='Treino B',
+            data_inicio=datetime.date(2026, 10, 1),
+            data_fim=datetime.date(2026, 10, 21),  # 20 dias
+            usuario=self.user
+        )
+
+        progresso = Progresso.objects.create(
+            usuario=self.user,
+            progresso_valor=15,  # (10 + 20) / 2
+            concluidos=3,        # 2 do Treino A e 1 do Treino B
+            ultimo_treino_id=treino_a.id,
+            dias_treinados=[
+                {'date': '2026-10-02', 'treino_id': treino_a.id, 'nome': treino_a.nome},
+                {'date': '2026-10-03', 'treino_id': treino_a.id, 'nome': treino_a.nome},
+                {'date': '2026-10-04', 'treino_id': treino_b.id, 'nome': treino_b.nome},
+            ]
+        )
+
+        # Exclui apenas o Treino A
+        response = self.client.post(reverse('excluir_treino', args=[treino_a.id]))
+        self.assertRedirects(response, reverse('treinos'))
+
+        self.assertEqual(Treino.objects.filter(id=treino_a.id).count(), 0)
+        self.assertEqual(Treino.objects.filter(id=treino_b.id).count(), 1)
+
+        progresso.refresh_from_db()
+        # Resta apenas o Treino B (20 dias)
+        self.assertEqual(progresso.progresso_valor, 20)
+        # 3 concluídos - 2 do treino A = 1 concluído
+        self.assertEqual(progresso.concluidos, 1)
+        self.assertEqual(len(progresso.dias_treinados), 1)
+        self.assertEqual(progresso.dias_treinados[0]['treino_id'], treino_b.id)
+        self.assertIsNone(progresso.ultimo_treino_id)
+
+        # Verifica na página de treinos o que é mostrado para o usuário
+        resp_treinos = self.client.get(reverse('treinos'))
+        self.assertContains(resp_treinos, '1 / 20 sessões')
+
+    def test_excluir_treino_professor_atualiza_progresso_do_aluno(self):
+        """Ao professor excluir treino de um aluno, o progresso do aluno é devidamente atualizado."""
+        user_prof = User.objects.create_user(
+            username='prof_teste',
+            email='prof@example.com',
+            password='password123'
+        )
+        professor = Professor.objects.create(
+            user=user_prof,
+            nome='Prof Teste',
+            email='prof@example.com',
+            cpf='99988877766',
+            data_nasc='1980-01-01',
+            data_admissao='2020-01-01'
+        )
+
+        treino = Treino.objects.create(
+            nome='Treino Aluno',
+            data_inicio=datetime.date(2026, 10, 1),
+            data_fim=datetime.date(2026, 10, 16),  # 15 dias
+            usuario=self.user,
+            professor=professor
+        )
+
+        progresso = Progresso.objects.create(
+            usuario=self.user,
+            progresso_valor=15,
+            concluidos=2,
+            dias_treinados=[
+                {'date': '2026-10-02', 'treino_id': treino.id, 'nome': treino.nome},
+                {'date': '2026-10-03', 'treino_id': treino.id, 'nome': treino.nome},
+            ]
+        )
+
+        self.client.login(username='prof_teste', password='password123')
+        response = self.client.post(
+            reverse('excluir_treino_professor', kwargs={'treino_id': treino.id, 'aluno_id': self.aluno.id})
+        )
+        self.assertRedirects(response, reverse('gerenciar_treinos', kwargs={'aluno_id': self.aluno.id}))
+
+        progresso.refresh_from_db()
+        self.assertEqual(progresso.progresso_valor, 0)
+        self.assertEqual(progresso.concluidos, 0)
+        self.assertEqual(progresso.dias_treinados, [])
+
+    def test_apagar_todos_treinos_zera_progresso(self):
+        """Ao apagar todos os treinos em configuracoes, zera sessões e concluídos."""
+        self.client.login(username='aluno_teste', password='password123')
+
+        t1 = Treino.objects.create(
+            nome='Treino 1',
+            data_inicio=datetime.date(2026, 10, 1),
+            data_fim=datetime.date(2026, 10, 11),
+            usuario=self.user
+        )
+        progresso = Progresso.objects.create(
+            usuario=self.user,
+            progresso_valor=10,
+            concluidos=2,
+            dias_treinados=[{'date': '2026-10-02', 'treino_id': t1.id, 'nome': t1.nome}]
+        )
+
+        response = self.client.post(reverse('apagar_todos_treinos'))
+        self.assertRedirects(response, reverse('configuracoes'))
+
+        self.assertEqual(Treino.objects.filter(usuario=self.user).count(), 0)
+        progresso.refresh_from_db()
+        self.assertEqual(progresso.progresso_valor, 0)
+        self.assertEqual(progresso.concluidos, 0)
+        self.assertEqual(progresso.dias_treinados, [])
+
+    def test_excluir_treino_quando_treino_restante_tem_zero_concluidos(self):
+        """Ao excluir um treino concluído, o treino restante com 0 concluídos mantém suas sessões atribuídas e concluídos zerado."""
+        self.client.login(username='aluno_teste', password='password123')
+
+        treino_a = Treino.objects.create(
+            nome='Treino A',
+            data_inicio=datetime.date(2026, 10, 1),
+            data_fim=datetime.date(2026, 10, 11),  # 10 dias
+            usuario=self.user
+        )
+        treino_b = Treino.objects.create(
+            nome='Treino B',
+            data_inicio=datetime.date(2026, 10, 1),
+            data_fim=datetime.date(2026, 10, 21),  # 20 dias
+            usuario=self.user
+        )
+
+        progresso = Progresso.objects.create(
+            usuario=self.user,
+            progresso_valor=15,  # (10 + 20) / 2
+            concluidos=2,        # 2 do Treino A, 0 do Treino B
+            ultimo_treino_id=treino_a.id,
+            dias_treinados=[
+                {'date': '2026-10-02', 'treino_id': treino_a.id, 'nome': treino_a.nome},
+                {'date': '2026-10-03', 'treino_id': treino_a.id, 'nome': treino_a.nome},
+            ]
+        )
+
+        response = self.client.post(reverse('excluir_treino', args=[treino_a.id]))
+        self.assertRedirects(response, reverse('treinos'))
+
+        progresso.refresh_from_db()
+        self.assertEqual(progresso.progresso_valor, 20)
+        self.assertEqual(progresso.concluidos, 0)
+        self.assertEqual(progresso.dias_treinados, [])
+
+        resp_treinos = self.client.get(reverse('treinos'))
+        self.assertContains(resp_treinos, '0 / 20 sessões')
+
+    def test_finalizar_treino_e_depois_excluir(self):
+        """Fluxo completo: finalizar treino registra progresso; ao excluir o treino, todo progresso é apagado."""
+        self.client.login(username='aluno_teste', password='password123')
+
+        treino = Treino.objects.create(
+            nome='Treino Funcional',
+            data_inicio=datetime.date(2026, 10, 1),
+            data_fim=datetime.date(2026, 10, 11),  # 10 dias
+            usuario=self.user
+        )
+        progresso = Progresso.objects.create(
+            usuario=self.user,
+            progresso_valor=10,
+            concluidos=0
+        )
+
+        # Finaliza o treino 1 vez
+        resp_finalizar = self.client.get(reverse('finalizar_treino', args=[treino.id]))
+        self.assertRedirects(resp_finalizar, reverse('treinos'))
+
+        progresso.refresh_from_db()
+        self.assertEqual(progresso.concluidos, 1)
+        self.assertEqual(len(progresso.dias_treinados), 1)
+        self.assertEqual(progresso.dias_treinados[0]['treino_id'], treino.id)
+
+        # Exclui o treino
+        resp_excluir = self.client.post(reverse('excluir_treino', args=[treino.id]))
+        self.assertRedirects(resp_excluir, reverse('treinos'))
+
+        progresso.refresh_from_db()
+        self.assertEqual(progresso.progresso_valor, 0)
+        self.assertEqual(progresso.concluidos, 0)
+        self.assertEqual(progresso.dias_treinados, [])
+
+        resp_treinos = self.client.get(reverse('treinos'))
+        self.assertContains(resp_treinos, '0 / 0 sessões')
+
+    def test_excluir_treino_direto_model_delete_dispara_signal(self):
+        """Exclusão direta do Treino via model.delete() ativa o signal e ajusta o progresso do usuário."""
+        treino = Treino.objects.create(
+            nome='Treino Direto',
+            data_inicio=datetime.date(2026, 10, 1),
+            data_fim=datetime.date(2026, 10, 11),
+            usuario=self.user
+        )
+        progresso = Progresso.objects.create(
+            usuario=self.user,
+            progresso_valor=10,
+            concluidos=2,
+            dias_treinados=[
+                {'date': '2026-10-02', 'treino_id': treino.id, 'nome': treino.nome},
+                {'date': '2026-10-03', 'treino_id': treino.id, 'nome': treino.nome},
+            ]
+        )
+
+        treino.delete()
+
+        progresso.refresh_from_db()
+        self.assertEqual(progresso.progresso_valor, 0)
+        self.assertEqual(progresso.concluidos, 0)
+        self.assertEqual(progresso.dias_treinados, [])

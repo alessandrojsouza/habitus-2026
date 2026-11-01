@@ -28,6 +28,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime, timedelta
 from habitusapp.suap import autenticar_no_suap, sincronizar_ou_criar_aluno_suap
+from habitusapp.signals import ajustar_progresso_ao_excluir_treino
 
 
 @csrf_protect
@@ -674,6 +675,11 @@ def excluir_treino(request, treino_id):
     treino = get_object_or_404(Treino, id=treino_id, usuario=request.user)
 
     if request.method == "POST":
+        ajustar_progresso_ao_excluir_treino(
+            treino_id=treino.id,
+            usuario_id=request.user.id,
+            treino_nome=treino.nome
+        )
         treino.delete()
         messages.success(request, "Treino excluído com sucesso!")
         Notificacao.objects.create(
@@ -739,7 +745,14 @@ def configuracoes(request):
 @login_required
 def apagar_todos_treinos(request):
     if request.method == "POST":
-        request.user.treino_set.all().delete() 
+        request.user.treino_set.all().delete()
+        progresso_objs = Progresso.objects.filter(usuario=request.user)
+        for progresso_obj in progresso_objs:
+            progresso_obj.progresso_valor = 0
+            progresso_obj.concluidos = 0
+            progresso_obj.dias_treinados = []
+            progresso_obj.ultimo_treino_id = None
+            progresso_obj.save()
         messages.success(request, "Todos os seus treinos foram apagados com sucesso.")
         return redirect("configuracoes") 
     return redirect("configuracoes")
@@ -750,10 +763,17 @@ def apagar_todos_treinos(request):
 @login_required
 def zerar_progresso(request):
     if request.method == "POST":
-        progresso, _ = Progresso.objects.get_or_create(usuario=request.user)
-        progresso.progresso_valor = 0
-        progresso.concluidos = 0
-        progresso.save()
+        progresso_objs = Progresso.objects.filter(usuario=request.user)
+        if not progresso_objs.exists():
+            Progresso.objects.create(usuario=request.user)
+            progresso_objs = Progresso.objects.filter(usuario=request.user)
+
+        for progresso in progresso_objs:
+            progresso.progresso_valor = 0
+            progresso.concluidos = 0
+            progresso.dias_treinados = []
+            progresso.ultimo_treino_id = None
+            progresso.save()
 
         messages.success(request, "Seu progresso foi zerado com sucesso!")
         return redirect("configuracoes")  # ou onde quiser mandar o usuário
@@ -845,12 +865,9 @@ def finalizar_treino(request, treino_id):
                 # ignora tipos estranhos
                 continue
 
-        # evita duplicata do mesmo treino no mesmo dia
-        exists = any((d.get('date') == hoje_str and d.get('treino_id') == treino.id) for d in normalized)
-        if not exists:
-            normalized.append(entry)
-            progresso_obj.dias_treinados = normalized
-            progresso_obj.save()
+        normalized.append(entry)
+        progresso_obj.dias_treinados = normalized
+        progresso_obj.save()
 
     return HttpResponseRedirect(reverse('treinos'))
 
@@ -859,7 +876,7 @@ def finalizar_treino(request, treino_id):
 #@csrf_exempt
 #@csrf_protect
 def calcular_progresso(usuario):
-    treinos = Treino.objects.filter(usuario=usuario)
+    treinos = Treino.objects.filter(usuario=usuario, arquivado=False)
     total_treinos = treinos.count()
 
     if total_treinos == 0:
@@ -867,22 +884,46 @@ def calcular_progresso(usuario):
     else:
         soma_dias = 0
         for treino in treinos:
-            dias = (treino.data_fim - treino.data_inicio).days
+            dias = max(0, (treino.data_fim - treino.data_inicio).days)
             soma_dias += dias
 
         progresso_total = round(soma_dias / total_treinos)
 
-    # CORREÇÃO: Usar first() em vez de get_or_create() para evitar MultipleObjectsReturned
-    progresso_obj = Progresso.objects.filter(usuario=usuario).first()
+    progresso_objs = list(Progresso.objects.filter(usuario=usuario))
     
-    if progresso_obj:
-        progresso_obj.progresso_valor = progresso_total
-        progresso_obj.save()
+    if progresso_objs:
+        active_treino_ids_str = {str(t_id) for t_id in treinos.values_list('id', flat=True)}
+        for progresso_obj in progresso_objs:
+            progresso_obj.progresso_valor = progresso_total
+            if total_treinos == 0:
+                progresso_obj.concluidos = 0
+                progresso_obj.dias_treinados = []
+                progresso_obj.ultimo_treino_id = None
+            else:
+                if progresso_obj.dias_treinados:
+                    novos_dias = []
+                    removidos = 0
+                    for e in progresso_obj.dias_treinados:
+                        if isinstance(e, dict) and e.get('treino_id') is not None:
+                            if str(e.get('treino_id')) not in active_treino_ids_str:
+                                removidos += 1
+                                continue
+                        novos_dias.append(e)
+                    if removidos > 0:
+                        progresso_obj.dias_treinados = novos_dias
+                        progresso_obj.concluidos = max(0, (progresso_obj.concluidos or 0) - removidos)
+
+                if len(progresso_obj.dias_treinados or []) == 0:
+                    progresso_obj.concluidos = 0
+                elif progresso_total > 0 and (progresso_obj.concluidos or 0) > progresso_total:
+                    progresso_obj.concluidos = progresso_total
+            progresso_obj.save()
     else:
         # Se não existir, cria um novo
         progresso_obj = Progresso.objects.create(
             usuario=usuario,
-            progresso_valor=progresso_total
+            progresso_valor=progresso_total,
+            concluidos=0
         )
 
     return progresso_total
